@@ -21,8 +21,8 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
     return UserModel.create(body);
   }
 
-  async save(user: UserModel): Promise<void> {
-    await this.repository.save({
+  async save(user: UserModel): Promise<UserEntity> {
+    return await this.repository.save({
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -30,8 +30,6 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
       password: user.getPassword(),
       is_active: user.is_active,
     });
-
-    return;
   }
 
   async findById(id: string): Promise<UserModel | null> {
@@ -47,7 +45,7 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
   }
 
   async findAll(): Promise<UserModel[]> {
-    const queryBuilder = this.repository.createQueryBuilder('user');
+    const queryBuilder = this.useQueryBuilder();
 
     const response = await queryBuilder.getMany();
     return response.map((entity) => UserModel.toDomain(entity));

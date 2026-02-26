@@ -3,11 +3,11 @@ import { uuidv7 } from 'uuidv7';
 
 export class UserModel {
   constructor(
-    public id: string,
-    public first_name: string,
-    public last_name: string,
-    public email: string,
-    private password: string,
+    public readonly id: string,
+    public readonly first_name: string,
+    public readonly last_name: string,
+    public readonly email: string,
+    public readonly password: string,
     public is_active: boolean,
   ) {}
 
@@ -15,11 +15,16 @@ export class UserModel {
     return this.password;
   }
 
-  deactivate() {
+  deactivate(): void {
     this.is_active = false;
   }
 
-  static create(props: { first_name: string; last_name: string; email: string; password: string }) {
+  static create(props: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+  }): UserModel {
     return new UserModel(
       uuidv7(),
       props.first_name,
@@ -39,5 +44,17 @@ export class UserModel {
       entity.password,
       entity.is_active,
     );
+  }
+
+  static toEntity(domain: UserEntity) {
+    return {
+      id: domain.id,
+      created_at: domain.created_at,
+      updated_at: domain.updated_at,
+      first_name: domain.first_name,
+      last_name: domain.last_name,
+      email: domain.email,
+      is_active: domain.is_active,
+    };
   }
 }
