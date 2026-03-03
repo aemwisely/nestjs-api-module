@@ -46,11 +46,9 @@ export class UserModel {
     );
   }
 
-  static toEntity(domain: UserEntity) {
+  static toEntity(domain: Partial<UserModel>) {
     return {
       id: domain.id,
-      created_at: domain.created_at,
-      updated_at: domain.updated_at,
       first_name: domain.first_name,
       last_name: domain.last_name,
       email: domain.email,

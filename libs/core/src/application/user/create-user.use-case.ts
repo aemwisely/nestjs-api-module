@@ -19,8 +19,14 @@ export class CreateUserUseCase {
       password: await this.useHash.hash(dto.password),
     });
 
-    const savedEntity = await this.repository.save(createEntity);
+    const entity = await this.repository.save(createEntity);
 
-    return UserModel.toEntity(savedEntity);
+    return UserModel.toEntity({
+      id: entity.id,
+      first_name: entity.first_name,
+      last_name: entity.last_name,
+      email: entity.email,
+      is_active: entity.is_active,
+    });
   }
 }
