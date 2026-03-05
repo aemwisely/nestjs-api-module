@@ -1,5 +1,13 @@
-import { UserEntity } from '@libs/common/entities';
 import { uuidv7 } from 'uuidv7';
+
+export type TUserEntity = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  is_active: boolean;
+};
 
 export class UserModel {
   constructor(
@@ -35,7 +43,7 @@ export class UserModel {
     );
   }
 
-  static toDomain(entity: UserEntity): UserModel {
+  static toDomain(entity: TUserEntity): UserModel {
     return new UserModel(
       entity.id,
       entity.first_name,
