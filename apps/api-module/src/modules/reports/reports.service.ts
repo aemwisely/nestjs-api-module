@@ -14,6 +14,7 @@ export class ReportsService {
           sheet_name: 'Public',
           headers: ['#', 'A', 'B', 'C'],
           topic: 'User management',
+          authorized_by: '',
         },
         data: [
           ['1', 'a', 'b', 'c'],
