@@ -9,7 +9,10 @@ export class BuildReportUseCase {
 
   async buildXLSX(dto: IBuildXLSX, response: Response) {
     return await this.xlsxProvider.buildFile(
+      dto.option.topic,
+      dto.option.filename,
       dto.option.sheet_name,
+      dto.option.authorized_by,
       dto.option.headers,
       dto.data,
       response,

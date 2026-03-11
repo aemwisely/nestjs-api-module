@@ -13,8 +13,17 @@ export class ReportsService {
           filename: new Date().toISOString(),
           sheet_name: 'Public',
           headers: ['#', 'A', 'B', 'C'],
+          topic: 'User management',
         },
-        data: [['1', 'a', 'b', 'c']],
+        data: [
+          ['1', 'a', 'b', 'c'],
+          ['2', 'a', 'b', 'c'],
+          ['3', 'a', 'b', 'c'],
+          ['4', 'a', 'b', 'c'],
+          ['5', 'a', 'b', 'c'],
+          ['6', 'a', 'b', 'c'],
+          ['7', 'a', 'b', 'c'],
+        ],
       },
       response,
     );
