@@ -54,4 +54,12 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
   useQueryBuilder(): SelectQueryBuilder<UserEntity> {
     return this.repository.createQueryBuilder('user');
   }
+
+  async findByEmail(email: string): Promise<UserModel | null> {
+    const entity = await this.repository.findOne({ where: { email: email } });
+
+    if (!entity) return null;
+
+    return UserModel.toDomain(entity);
+  }
 }

@@ -1,4 +1,4 @@
 export * from './ports';
 export * from './get-user.use-case';
 export * from './create-user.use-case';
-export * from './dto';
+export * from '../../presentation/user/dto';

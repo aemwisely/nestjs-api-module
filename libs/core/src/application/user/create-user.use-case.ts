@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserFunctionalRepository } from './ports';
-import { CreateUserDto } from './dto';
+import { CreateUserDto } from '../../presentation/user/dto';
 import { BcryptPasswordHasher } from '@libs/core/infrastructure';
 import { UserModel } from '@libs/core/domain';
 
