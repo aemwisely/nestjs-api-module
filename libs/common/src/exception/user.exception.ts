@@ -33,3 +33,15 @@ export class UserEmailNotFoundException extends BaseHttpException {
     });
   }
 }
+
+export class UserUnauthorizedException extends BaseHttpException {
+  constructor(data?: object) {
+    super({
+      menu: EModule.USER,
+      type: ErrorType.UNAUTHORIZED,
+      status: HttpStatus.UNAUTHORIZED,
+      message: EMessage.UNAUTHORIZED,
+      data,
+    });
+  }
+}

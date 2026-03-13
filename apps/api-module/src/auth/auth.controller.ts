@@ -1,7 +1,9 @@
+import { JwtGuard } from '@libs/common/authentication';
+import { Context, IContext } from '@libs/common/decorator';
 import { LoginUseCase } from '@libs/core/application/auth';
 import { LoginDto } from '@libs/core/infrastructure';
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('authentication')
 @ApiTags('Authentication')
@@ -15,4 +17,9 @@ export class AuthController {
       result: data,
     };
   }
+
+  @Get('/self')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  async getSelf(@Context() _context: IContext) {}
 }

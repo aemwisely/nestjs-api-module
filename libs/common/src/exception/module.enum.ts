@@ -4,6 +4,7 @@ export enum EModule {
 }
 
 export enum EMessage {
-  NOT_FOUND = 'Entity not found',
-  BAD_REQUEST = 'Please try again later',
+  NOT_FOUND = 'The requested resource was not found.',
+  BAD_REQUEST = 'Invalid request. Please check your input and try again.',
+  UNAUTHORIZED = 'Unauthorized access. Please login and try again.',
 }
