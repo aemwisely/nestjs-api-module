@@ -1,6 +1,6 @@
 import { XLSXProvider } from '@libs/core/infrastructure';
 import { Injectable } from '@nestjs/common';
-import { IBuildXLSX } from './interface';
+import { IBuildXLSX } from '../../presentation/reports/interface';
 import { Response } from 'express';
 
 @Injectable()
