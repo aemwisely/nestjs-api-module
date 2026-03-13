@@ -1,7 +1,8 @@
 import { JwtRepository } from '@libs/core/infrastructure';
 import { Injectable } from '@nestjs/common';
-import { GetUserUseCase, PasswordHasher } from '../user';
+import { GetUserUseCase } from '../user';
 import { IncorrectPasswordException } from '@libs/common/exception';
+import { PasswordHasher } from '../hasher';
 
 @Injectable()
 export class LoginUseCase {

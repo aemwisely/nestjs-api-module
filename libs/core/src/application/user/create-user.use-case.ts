@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserFunctionalRepository } from './ports';
 import { CreateUserDto } from '../../presentation/user/dto';
-import { BcryptPasswordHasher } from '@libs/core/infrastructure';
 import { UserModel } from '@libs/core/domain';
+import { PasswordHasher } from '../hasher';
 
 @Injectable()
 export class CreateUserUseCase {
   constructor(
     private repository: UserFunctionalRepository,
-    private useHash: BcryptPasswordHasher,
+    private hasher: PasswordHasher,
   ) {}
 
   async execute(dto: CreateUserDto) {
@@ -16,7 +16,7 @@ export class CreateUserUseCase {
       email: dto.email,
       first_name: dto.first_name,
       last_name: dto.last_name,
-      password: await this.useHash.hash(dto.password),
+      password: await this.hasher.hash(dto.password),
     });
 
     const entity = await this.repository.save(createEntity);
