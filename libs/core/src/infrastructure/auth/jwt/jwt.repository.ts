@@ -12,7 +12,7 @@ export class JwtRepository implements TokenFunctionalRepository {
 
   async generateAccessToken(payload: any): Promise<string> {
     return await this.jwt.signAsync(payload, {
-      secret: this.config.get<string>('JWT_ACCESS_SECRET'),
+      secret: this.config.get<string>('JWT_SECRET'),
       expiresIn: '15m',
     });
   }

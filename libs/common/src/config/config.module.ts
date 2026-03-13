@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import DatabaseConfig from './files/database.config';
 import MinioConfig from './files/minio.config';
+import AuthConfig from './files/auth.config';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import MinioConfig from './files/minio.config';
         () => ({
           database: DatabaseConfig(),
           minio: MinioConfig(),
+          auth: AuthConfig(),
         }),
       ],
     }),

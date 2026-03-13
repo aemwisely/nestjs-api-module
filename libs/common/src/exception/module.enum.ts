@@ -1,4 +1,5 @@
 export enum EModule {
+  AUTH = '00',
   USER = '01',
 }
 

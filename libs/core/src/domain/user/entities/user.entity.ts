@@ -63,4 +63,11 @@ export class UserModel {
       is_active: domain.is_active,
     };
   }
+
+  getPayload() {
+    return {
+      sub: this.id,
+      email: this.email,
+    };
+  }
 }

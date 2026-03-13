@@ -17,15 +17,17 @@ interface ExceptionOptions {
   message?: string;
   status: HttpStatus;
   fieldCode?: string;
+  data?: object;
 }
 
 export class BaseHttpException extends HttpException {
-  constructor({ menu, type, message, status, fieldCode }: ExceptionOptions) {
+  constructor({ menu, type, message, status, fieldCode, data }: ExceptionOptions) {
     const errorCode = `E${menu}X${type}F${fieldCode}`;
     super(
       {
         error_code: errorCode,
         error_message: message,
+        data,
       },
       status,
     );
@@ -33,12 +35,13 @@ export class BaseHttpException extends HttpException {
 }
 
 export class BadRequestDefault extends BaseHttpException {
-  constructor(menu: EModule) {
+  constructor(menu: EModule, data?: object) {
     super({
       menu: menu,
       type: ErrorType.BAD_REQUEST,
       status: HttpStatus.BAD_REQUEST,
       message: EMessage.BAD_REQUEST,
+      data,
     });
   }
 }

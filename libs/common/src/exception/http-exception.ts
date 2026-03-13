@@ -18,6 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse();
+      console.log('🚀 - res:', res);
 
       if (typeof res === 'string') {
         errorMessage = res;
@@ -30,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             : resObj.error
               ? resObj.error
               : 'Unknown error';
-        errorCode = resObj.error_code ?? resObj.code ?? '000000';
+        errorCode = resObj.error_code ?? resObj.code ?? 'E00X000F00';
         errorData = resObj.data ?? null; // 👈 get the `data` property here
       } else {
         errorMessage = 'Unknown HttpException';
@@ -38,7 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     } else if (exception && typeof exception === 'object') {
       // fallback for unknown thrown objects
       errorMessage = (exception as any).error_message ?? 'Internal server error';
-      errorCode = (exception as any).error_code ?? '000000';
+      errorCode = (exception as any).error_code ?? 'E00X000F00';
       errorData = (exception as any).data ?? null; // 👈 also check here
       status = HttpStatus.INTERNAL_SERVER_ERROR;
     } else {
@@ -59,12 +60,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.error(JSON.stringify(logging, null, 2));
 
     response.status(status).json({
-      success: false,
       req_id: requestId,
+      timestamp: new Date().toISOString(),
+      success: false,
       status: status,
       error_code: errorCode,
       error_message: errorMessage,
-      timestamp: new Date().toISOString(),
     });
   }
 }

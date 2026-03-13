@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserFunctionalRepository } from './ports';
 import { UserModel } from '@libs/core/domain';
-import { UserIdNotFoundException } from '@libs/common/exception';
+import { UserEmailNotFoundException, UserIdNotFoundException } from '@libs/common/exception';
 
 @Injectable()
 export class GetUserUseCase {
@@ -18,5 +18,13 @@ export class GetUserUseCase {
     if (!entity) throw new UserIdNotFoundException();
 
     return UserModel.toEntity(entity);
+  }
+
+  async getOneByEmail(email: string) {
+    const entity = await this.repository.findByEmail(email);
+
+    if (!entity) throw new UserEmailNotFoundException();
+
+    return entity;
   }
 }

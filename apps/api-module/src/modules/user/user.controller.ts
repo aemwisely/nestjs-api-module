@@ -3,7 +3,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
-@ApiTags('user-management')
+@ApiTags('User-management')
 export class UserController {
   constructor(
     private usecaseGetUser: GetUserUseCase,
