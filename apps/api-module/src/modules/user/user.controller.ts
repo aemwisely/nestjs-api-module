@@ -1,9 +1,12 @@
+import { JwtGuard } from '@libs/common/authentication';
 import { CreateUserDto, CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
 @ApiTags('User-management')
+@UseGuards(JwtGuard)
+@ApiBearerAuth()
 export class UserController {
   constructor(
     private usecaseGetUser: GetUserUseCase,
