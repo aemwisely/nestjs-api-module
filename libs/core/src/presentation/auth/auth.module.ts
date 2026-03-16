@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtCoreModule } from './jwt.module';
-import { LoginUseCase } from '@libs/core/application/auth';
+import { GetSelfUseCase, LoginUseCase } from '@libs/core/application/auth';
 import { UserCoreModule } from '../user';
 import { PasswordHasher } from '@libs/core/application';
 import { BcryptPasswordHasher } from '@libs/core/infrastructure';
@@ -11,9 +11,10 @@ import { JwtStrategy } from '@libs/common/authentication';
   imports: [JwtCoreModule, UserCoreModule, PassportModule.register({ defaultStrategy: 'jwt' })],
   providers: [
     LoginUseCase,
+    GetSelfUseCase,
     { provide: PasswordHasher, useClass: BcryptPasswordHasher },
     JwtStrategy,
   ],
-  exports: [LoginUseCase],
+  exports: [LoginUseCase, GetSelfUseCase],
 })
 export class AuthCoreModule {}
