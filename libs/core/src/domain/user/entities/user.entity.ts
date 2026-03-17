@@ -64,10 +64,11 @@ export class UserModel {
     };
   }
 
-  getPayload() {
+  getPayload(session_id: string) {
     return {
       sub: this.id,
       email: this.email,
+      session_id,
     };
   }
 }

@@ -1,5 +1,6 @@
 import { JwtGuard } from '@libs/common/authentication';
-import { CreateUserDto, CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
+import { CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
+import { CreateUserDto } from '@libs/core/presentation';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

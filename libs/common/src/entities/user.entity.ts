@@ -17,4 +17,7 @@ export class UserEntity extends CommonEntity {
 
   @Column()
   is_active: boolean;
+
+  @Column()
+  session_id: string;
 }

@@ -9,4 +9,5 @@ export abstract class UserFunctionalRepository {
   abstract findAll(): Promise<TUserEntity[]>;
   abstract useQueryBuilder(): IUserQueryBuilder<TUserEntity>;
   abstract findByEmail(email: string): Promise<UserModel | null>;
+  abstract update(id: string, body: Partial<TUserEntity>): Promise<boolean>;
 }

@@ -3,12 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { GetUserUseCase } from '../user';
 import { IncorrectPasswordException } from '@libs/common/exception';
 import { PasswordHasher } from '../hasher';
+import { uuidv7 } from 'uuidv7';
+import { UpdateUserUseCase } from '../user/update-user.use-case';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
     private jwt: JwtRepository,
     private getUserUseCase: GetUserUseCase,
+    private updateUserUseCase: UpdateUserUseCase,
     private hasher: PasswordHasher,
   ) {}
 
@@ -25,14 +28,12 @@ export class LoginUseCase {
         throw new IncorrectPasswordException({ email: findUser.email });
       }
 
-      const payload = findUser.getPayload();
+      const generateSession = uuidv7();
+
+      const payload = findUser.getPayload(generateSession);
+      await this.updateUserUseCase.execute(findUser.id, { session_id: generateSession });
 
       const accessToken = await this.jwt.generateAccessToken(payload);
-
-      // const [accessToken, refreshToken] = await Promise.all([
-      //   this.jwt.generateAccessToken(payload),
-      //   this.jwt.generateRefreshToken(payload),
-      // ]);
 
       return { access_token: accessToken, refresh_token: '' };
     } catch (error) {

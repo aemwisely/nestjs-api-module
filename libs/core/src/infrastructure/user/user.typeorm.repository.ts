@@ -1,6 +1,6 @@
 import { UserEntity } from '@libs/common/entities';
 import { UserFunctionalRepository } from '@libs/core/application';
-import { UserModel } from '@libs/core/domain';
+import { TUserEntity, UserModel } from '@libs/core/domain';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
@@ -61,5 +61,14 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
     if (!entity) return null;
 
     return UserModel.toDomain(entity);
+  }
+
+  async update(id: string, body: Partial<TUserEntity>): Promise<boolean> {
+    try {
+      await this.repository.update({ id }, body);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
