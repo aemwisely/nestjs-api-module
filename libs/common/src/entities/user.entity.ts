@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { CommonEntity } from '../base';
 import { RoleEntity } from './role.entity';
 
@@ -31,6 +31,7 @@ export class UserEntity extends CommonEntity {
   refresh_token: string;
 
   @ManyToOne(() => RoleEntity)
+  @JoinColumn({ name: 'role_id' })
   role: RoleEntity;
 
   @Column()
