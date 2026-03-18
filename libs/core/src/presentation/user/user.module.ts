@@ -9,9 +9,10 @@ import { UserTypeOrmRepository } from '@libs/core/infrastructure';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HasherCoreModule } from '../hasher';
+import { RoleEntity } from '@libs/common/entities/role.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), HasherCoreModule],
+  imports: [TypeOrmModule.forFeature([UserEntity, RoleEntity]), HasherCoreModule],
   providers: [
     {
       provide: UserFunctionalRepository,

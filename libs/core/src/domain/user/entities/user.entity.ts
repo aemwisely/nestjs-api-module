@@ -1,3 +1,4 @@
+import { UserEntity } from '@libs/common/entities';
 import { uuidv7 } from 'uuidv7';
 
 export type TUserEntity = {
@@ -55,13 +56,13 @@ export class UserModel {
   }
 
   static toEntity(domain: Partial<UserModel>) {
-    return {
+    return new UserEntity({
       id: domain.id,
       first_name: domain.first_name,
       last_name: domain.last_name,
       email: domain.email,
       is_active: domain.is_active,
-    };
+    });
   }
 
   getPayload(session_id: string) {

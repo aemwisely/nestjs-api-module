@@ -2,6 +2,7 @@ import { TokenFunctionalRepository } from '@libs/core/application';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class JwtRepository implements TokenFunctionalRepository {
@@ -13,7 +14,7 @@ export class JwtRepository implements TokenFunctionalRepository {
   async generateAccessToken(payload: any): Promise<string> {
     return await this.jwt.signAsync(payload, {
       secret: this.config.get<string>('JWT_SECRET'),
-      expiresIn: '6h',
+      expiresIn: '15m',
     });
   }
 
@@ -22,5 +23,9 @@ export class JwtRepository implements TokenFunctionalRepository {
       secret: this.config.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: '3d',
     });
+  }
+
+  async hashToken(token: string): Promise<string> {
+    return await bcrypt.hash(token, 10);
   }
 }

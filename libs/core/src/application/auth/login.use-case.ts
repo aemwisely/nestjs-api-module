@@ -31,11 +31,18 @@ export class LoginUseCase {
       const generateSession = uuidv7();
 
       const payload = findUser.getPayload(generateSession);
-      await this.updateUserUseCase.execute(findUser.id, { session_id: generateSession });
 
-      const accessToken = await this.jwt.generateAccessToken(payload);
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwt.generateAccessToken(payload),
+        this.jwt.generateRefreshToken(payload),
+      ]);
 
-      return { access_token: accessToken, refresh_token: '' };
+      await this.updateUserUseCase.execute(findUser.id, {
+        session_id: generateSession,
+        refresh_token: refreshToken,
+      });
+
+      return { access_token: accessToken, refresh_token: refreshToken };
     } catch (error) {
       throw error;
     }
