@@ -17,6 +17,7 @@ export class CreateUserUseCase {
       first_name: dto.first_name,
       last_name: dto.last_name,
       password: await this.hasher.hash(dto.password),
+      role_id: dto.role_id,
     });
 
     const entity = await this.repository.save(createEntity);

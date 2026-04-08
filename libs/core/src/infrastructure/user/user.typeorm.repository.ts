@@ -17,6 +17,7 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
     last_name: string;
     email: string;
     password: string;
+    role_id: string;
   }): UserModel {
     return UserModel.create(body);
   }
@@ -29,6 +30,7 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
       email: user.email,
       password: user.getPassword(),
       is_active: user.is_active,
+      role_id: user.role_id,
     });
   }
 

@@ -8,6 +8,7 @@ export type TUserEntity = {
   email: string;
   password: string;
   is_active: boolean;
+  role_id: string;
 };
 
 export class UserModel {
@@ -18,6 +19,7 @@ export class UserModel {
     public readonly email: string,
     public readonly password: string,
     public is_active: boolean,
+    public role_id: string,
   ) {}
 
   getPassword(): string {
@@ -33,6 +35,7 @@ export class UserModel {
     last_name: string;
     email: string;
     password: string;
+    role_id: string;
   }): UserModel {
     return new UserModel(
       uuidv7(),
@@ -41,6 +44,7 @@ export class UserModel {
       props.email,
       props.password,
       true,
+      props.role_id,
     );
   }
 
@@ -52,6 +56,7 @@ export class UserModel {
       entity.email,
       entity.password,
       entity.is_active,
+      entity.role_id,
     );
   }
 
