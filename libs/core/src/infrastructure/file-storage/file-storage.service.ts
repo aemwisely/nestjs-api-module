@@ -40,12 +40,12 @@ export class FileStorageService {
     });
   }
 
-  private getShortFileName(file: Express.Multer.File) {
+  private getShortFilename(file: Express.Multer.File) {
     const ext = extname(file.originalname);
 
     const type = ext.replace('.', '').toLocaleUpperCase();
 
-    const timestamp = dayjs().format('DDHHmmss');
+    const timestamp = dayjs().format('DDHHmmssSSS');
 
     return `${type}-${timestamp}${ext}`;
   }
@@ -61,7 +61,7 @@ export class FileStorageService {
     key: string;
   }> {
     try {
-      const filename = this.getShortFileName(file);
+      const filename = this.getShortFilename(file);
 
       const key = `${main_folder}/${sub_folder}/${filename}`;
 

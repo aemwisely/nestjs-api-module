@@ -17,10 +17,10 @@ export class MediaObjectService {
   async createMedia(bucketname: string, files: Express.Multer.File[]) {
     const main = dayjs().format('YYYY');
     const sub = dayjs().format('MM');
-
+    const completeFiles: MediaObjectEntity[] = [];
     try {
-      return await Promise.all(
-        files.map(async (file) => {
+      if (files.length > 0) {
+        for (const file of files) {
           const { mimetype } = file;
 
           const { filename, url, key } = await this.fileStorageService.putObjectAndPresignUrl(
@@ -40,9 +40,11 @@ export class MediaObjectService {
             key,
           });
 
-          return this.mediaObjectRepository.save(media);
-        }),
-      );
+          const savedMedia = await this.mediaObjectRepository.save(media);
+          completeFiles.push(savedMedia);
+        }
+      }
+      return completeFiles;
     } catch (error) {
       throw error;
     }
