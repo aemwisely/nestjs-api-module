@@ -11,9 +11,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([MediaObjectEntity])],
   providers: [
     FileStorageService,
-    { provide: MediaObjectFunctionalRepository, useClass: MediaObjectCoreService },
     MediaObjectCoreService,
     CreateMediaUseCase,
+    { provide: MediaObjectFunctionalRepository, useClass: MediaObjectCoreService },
   ],
   exports: [FileStorageService, CreateMediaUseCase],
 })

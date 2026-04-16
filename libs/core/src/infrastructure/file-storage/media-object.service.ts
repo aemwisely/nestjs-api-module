@@ -37,8 +37,9 @@ export class MediaObjectCoreService implements MediaObjectFunctionalRepository {
             mimetype,
             url,
             bucket: bucketname,
-            expire_date: dayjs().add(7, 'day').toISOString(),
+            expire_date: bucketname === 'public' ? undefined : dayjs().add(7, 'day').toISOString(),
             key,
+            is_public: bucketname === 'public' ? true : false,
           });
 
           const savedMedia = await this.mediaObjectRepository.save(media);
