@@ -1,12 +1,12 @@
-import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { MediaObjectService } from './media-object.service';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreateMediaUseCase } from '@libs/core/application/file-storage';
 import { BucketList, FileUpload } from '@libs/core/presentation';
+import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 @Controller('media-object')
 export class MediaObjectController {
-  constructor(private mediaObjectService: MediaObjectService) {}
+  constructor(private createMediaUseCase: CreateMediaUseCase) {}
 
   @Post('/')
   @ApiConsumes('multipart/form-data')
@@ -34,7 +34,7 @@ export class MediaObjectController {
     },
   })
   async created(@UploadedFiles() files: Express.Multer.File[], @Body() body: FileUpload) {
-    const data = await this.mediaObjectService.createMedia(body.bucket, files);
+    const data = await this.createMediaUseCase.execute(body.bucket, files);
 
     return {
       result: data,

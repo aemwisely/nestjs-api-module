@@ -1,13 +1,14 @@
-import dayjs from '@libs/common/base/dayjs/dayjs';
 import { MediaObjectEntity } from '@libs/common/entities';
-import { FileStorageService } from '@libs/core/infrastructure';
+import { MediaObjectFunctionalRepository } from '@libs/core/application/file-storage';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { uuidv7 } from 'uuidv7';
+import { FileStorageService } from './file-storage.service';
+import dayjs from '@libs/common/base/dayjs/dayjs';
 
 @Injectable()
-export class MediaObjectService {
+export class MediaObjectCoreService implements MediaObjectFunctionalRepository {
   constructor(
     @InjectRepository(MediaObjectEntity)
     private mediaObjectRepository: Repository<MediaObjectEntity>,

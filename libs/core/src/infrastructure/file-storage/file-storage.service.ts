@@ -1,11 +1,12 @@
 import dayjs from '@libs/common/base/dayjs/dayjs';
+import { FileStorageFunctionalRepository } from '@libs/core/application/file-storage/ports';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from 'minio';
 import { extname } from 'path';
 
 @Injectable()
-export class FileStorageService {
+export class FileStorageService implements FileStorageFunctionalRepository {
   private minioClient: Minio.Client;
 
   private publicBucket: string;
@@ -24,8 +25,6 @@ export class FileStorageService {
     this.useSSL = this.configService.get<boolean>('minio.ssl', false);
     this.accessKey = this.configService.get<string>('minio.access_key') ?? '';
     this.secretKey = this.configService.get<string>('minio.secret_key') ?? '';
-    // this.bucket = this.configService.get<string>('minio.bucket') || '';
-    this.publicBucket = this.configService.get<string>('minio.bucket_public') || '';
 
     if (!this.endpoint || !this.port || !this.accessKey || !this.secretKey) {
       throw new Error('Minio configuration values are missing');
