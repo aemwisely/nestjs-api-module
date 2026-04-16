@@ -1,24 +1,19 @@
 import { ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserUnauthorizedException } from '../exception';
-import { IContext } from '../decorator';
 
 export class JwtGuard extends AuthGuard('jwt') {
-  constructor() {
-    super();
-  }
+  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const result = (await super.canActivate(context)) as boolean;
-
-    if (!result) {
-      throw new UserUnauthorizedException({ context: context.switchToHttp().getRequest() });
+    if (err || !user) {
+      throw new UserUnauthorizedException({
+        path: request.url,
+        method: request.method,
+        info: info?.message,
+      });
     }
 
-    const request = context.switchToHttp().getRequest();
-    const userAction = request?.user as IContext;
-    console.log('🚀 - userAction:', userAction);
-
-    return !!userAction;
+    return user;
   }
 }

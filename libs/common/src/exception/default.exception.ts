@@ -22,7 +22,7 @@ interface ExceptionOptions {
 
 export class BaseHttpException extends HttpException {
   constructor({ menu, type, message, status, fieldCode, data }: ExceptionOptions) {
-    const errorCode = `E${menu}X${type}F${fieldCode}`;
+    const errorCode = `E${menu}X${type}F${fieldCode || '00'}`;
     super(
       {
         error_code: errorCode,

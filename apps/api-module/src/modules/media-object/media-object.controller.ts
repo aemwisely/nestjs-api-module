@@ -1,10 +1,14 @@
+import { JwtGuard } from '@libs/common/authentication';
 import { CreateMediaUseCase } from '@libs/core/application/file-storage';
 import { BucketList, FileUpload } from '@libs/core/presentation';
-import { Body, Controller, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('media-object')
+@ApiTags('Media-object')
+@UseGuards(JwtGuard)
+@ApiBearerAuth()
 export class MediaObjectController {
   constructor(private createMediaUseCase: CreateMediaUseCase) {}
 
