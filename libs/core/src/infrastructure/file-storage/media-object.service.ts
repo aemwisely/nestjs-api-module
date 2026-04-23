@@ -2,10 +2,12 @@ import { MediaObjectEntity } from '@libs/common/entities';
 import { MediaObjectFunctionalRepository } from '@libs/core/application/file-storage';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { uuidv7 } from 'uuidv7';
 import { FileStorageService } from './file-storage.service';
 import dayjs from '@libs/common/base/dayjs/dayjs';
+import { IContext } from '@libs/common/decorator';
+import { CommonFilter } from '@libs/common/base';
 
 @Injectable()
 export class MediaObjectCoreService implements MediaObjectFunctionalRepository {
@@ -15,40 +17,49 @@ export class MediaObjectCoreService implements MediaObjectFunctionalRepository {
     private fileStorageService: FileStorageService,
   ) {}
 
-  async createMedia(bucketname: string, files: Express.Multer.File[]) {
+  async createMedia(bucketname: string, files: Express.Multer.File[], context: IContext) {
     const main = dayjs().format('YYYY');
     const sub = dayjs().format('MM');
     const completeFiles: MediaObjectEntity[] = [];
-    try {
-      if (files.length > 0) {
-        for (const file of files) {
-          const { mimetype } = file;
 
-          const { filename, url, key } = await this.fileStorageService.putObjectAndPresignUrl(
-            bucketname,
-            file,
-            main,
-            sub,
-          );
+    if (files.length > 0) {
+      for (const file of files) {
+        const { mimetype } = file;
 
-          const media = this.mediaObjectRepository.create({
-            id: uuidv7(),
-            name: filename,
-            mimetype,
-            url,
-            bucket: bucketname,
-            expire_date: bucketname === 'public' ? undefined : dayjs().add(7, 'day').toISOString(),
-            key,
-            is_public: bucketname === 'public' ? true : false,
-          });
+        const { filename, url, key } = await this.fileStorageService.putObjectAndPresignUrl(
+          bucketname,
+          file,
+          main,
+          sub,
+        );
 
-          const savedMedia = await this.mediaObjectRepository.save(media);
-          completeFiles.push(savedMedia);
-        }
+        const media = this.mediaObjectRepository.create({
+          id: uuidv7(),
+          name: filename,
+          mimetype,
+          url,
+          bucket: bucketname,
+          expire_date: bucketname === 'public' ? undefined : dayjs().add(7, 'day').toISOString(),
+          key,
+          is_public: bucketname === 'public' ? true : false,
+          uploader_id: context.sub,
+        });
+
+        const savedMedia = await this.mediaObjectRepository.save(media);
+        completeFiles.push(savedMedia);
       }
-      return completeFiles;
-    } catch (error) {
-      throw error;
     }
+    return completeFiles;
+  }
+
+  getQueryPagination(qs: CommonFilter): SelectQueryBuilder<MediaObjectEntity> {
+    const { pagination, getOffset, limit } = qs;
+    const query = this.mediaObjectRepository.createQueryBuilder('m');
+
+    if (pagination) {
+      query.skip(getOffset(qs)).take(limit);
+    }
+
+    return query;
   }
 }

@@ -1,6 +1,7 @@
 import { MediaObjectEntity } from '@libs/common/entities';
 import {
   CreateMediaUseCase,
+  GetMediaUseCase,
   MediaObjectFunctionalRepository,
 } from '@libs/core/application/file-storage';
 import { FileStorageService, MediaObjectCoreService } from '@libs/core/infrastructure';
@@ -13,8 +14,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     FileStorageService,
     MediaObjectCoreService,
     CreateMediaUseCase,
+    GetMediaUseCase,
     { provide: MediaObjectFunctionalRepository, useClass: MediaObjectCoreService },
   ],
-  exports: [FileStorageService, CreateMediaUseCase],
+  exports: [FileStorageService, CreateMediaUseCase, GetMediaUseCase],
 })
 export class FileStorageModule {}

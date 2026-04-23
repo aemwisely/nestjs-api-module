@@ -1,9 +1,12 @@
 import dayjs from '@libs/common/base/dayjs/dayjs';
+import { MediaObjectEntity } from '@libs/common/entities';
 import { FileStorageFunctionalRepository } from '@libs/core/application/file-storage/ports';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
 import * as Minio from 'minio';
 import { extname } from 'path';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class FileStorageService implements FileStorageFunctionalRepository {
@@ -18,7 +21,10 @@ export class FileStorageService implements FileStorageFunctionalRepository {
   // รองรับหลาย public bucket
   private publicBuckets: string[];
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @InjectDataSource() private datasource: DataSource,
+  ) {
     this.endpoint = this.configService.get<string>('minio.url') ?? '';
     this.port = parseInt(this.configService.get<string>('minio.port') ?? '9000', 10);
     this.useSSL = this.configService.get<boolean>('minio.ssl', false);
@@ -115,5 +121,38 @@ export class FileStorageService implements FileStorageFunctionalRepository {
 
     // ✅ private → presigned URL
     return this.minioClient.presignedGetObject(bucket, key, expiry);
+  }
+
+  private async updateMediaObjectDueDate(mediaObject: MediaObjectEntity, url: string) {
+    await this.datasource
+      .createQueryBuilder()
+      .update(MediaObjectEntity)
+      .set({
+        url: url,
+        due_date: new Date(dayjs().add(7, 'day').toISOString()),
+      })
+      .where('id = :id', { id: mediaObject.id })
+      .execute();
+  }
+
+  async checkAndPresignedUrl(v: MediaObjectEntity) {
+    const currentDate = new Date();
+
+    // 1️⃣ If it's public or missing bucket info, just return
+    if (!v?.bucket || v.is_public) {
+      return v.url;
+    }
+
+    // 2️⃣ Only handle presigning for the private bucket
+    if (v.bucket && v.key) {
+      if (!v?.expire_date || v?.expire_date < currentDate) {
+        const url = await this.presignedUrl(v.bucket, v.key);
+        await this.updateMediaObjectDueDate(v, url);
+        return url;
+      }
+    }
+
+    // 3️⃣ Default return
+    return v.url;
   }
 }

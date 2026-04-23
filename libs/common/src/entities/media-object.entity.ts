@@ -28,4 +28,7 @@ export class MediaObjectEntity extends CommonEntity {
 
   @Column()
   key: string;
+
+  @Column()
+  uploader_id: string;
 }

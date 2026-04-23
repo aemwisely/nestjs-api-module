@@ -1,7 +1,18 @@
 import { JwtGuard } from '@libs/common/authentication';
-import { CreateMediaUseCase } from '@libs/core/application/file-storage';
+import { CommonFilter } from '@libs/common/base';
+import { Context, IContext } from '@libs/common/decorator';
+import { CreateMediaUseCase, GetMediaUseCase } from '@libs/core/application/file-storage';
 import { BucketList, FileUpload } from '@libs/core/presentation';
-import { Body, Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -10,7 +21,10 @@ import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
 export class MediaObjectController {
-  constructor(private createMediaUseCase: CreateMediaUseCase) {}
+  constructor(
+    private createMediaUseCase: CreateMediaUseCase,
+    private getMediaUseCase: GetMediaUseCase,
+  ) {}
 
   @Post('/')
   @ApiConsumes('multipart/form-data')
@@ -37,11 +51,20 @@ export class MediaObjectController {
       },
     },
   })
-  async created(@UploadedFiles() files: Express.Multer.File[], @Body() body: FileUpload) {
-    const data = await this.createMediaUseCase.execute(body.bucket, files);
+  async created(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: FileUpload,
+    @Context() context: IContext,
+  ) {
+    const data = await this.createMediaUseCase.execute(body.bucket, files, context);
 
     return {
       result: data,
     };
+  }
+
+  @Get('/')
+  async findAllWithPagination(@Query() qs: CommonFilter, @Context() context: IContext) {
+    return await this.getMediaUseCase.findAllWithPagination(qs, context);
   }
 }
