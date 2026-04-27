@@ -1,15 +1,15 @@
-import { JwtRepository } from '@libs/core/infrastructure';
 import { Injectable } from '@nestjs/common';
 import { GetUserUseCase } from '../user';
 import { IncorrectPasswordException } from '@libs/common/exception';
 import { PasswordHasher } from '../hasher';
 import { uuidv7 } from 'uuidv7';
 import { UpdateUserUseCase } from '../user/update-user.use-case';
+import { TokenFunctionalRepository } from '../token';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
-    private jwt: JwtRepository,
+    private tokenRepository: TokenFunctionalRepository,
     private getUserUseCase: GetUserUseCase,
     private updateUserUseCase: UpdateUserUseCase,
     private hasher: PasswordHasher,
@@ -33,8 +33,8 @@ export class LoginUseCase {
       const payload = findUser.getPayload(generateSession);
 
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwt.generateAccessToken(payload),
-        this.jwt.generateRefreshToken(payload),
+        this.tokenRepository.generateAccessToken(payload),
+        this.tokenRepository.generateRefreshToken(payload),
       ]);
 
       await this.updateUserUseCase.execute(findUser.id, {

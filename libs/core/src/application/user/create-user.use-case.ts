@@ -12,7 +12,7 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(dto: CreateUserDto) {
-    const createEntity = this.repository.create({
+    const createEntity = UserModel.create({
       email: dto.email,
       first_name: dto.first_name,
       last_name: dto.last_name,

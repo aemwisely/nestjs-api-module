@@ -1,3 +1,4 @@
+import { TokenFunctionalRepository } from '@libs/core/application';
 import { JwtRepository } from '@libs/core/infrastructure/auth';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,7 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
       }),
     }),
   ],
-  providers: [JwtRepository],
-  exports: [JwtRepository],
+  providers: [{ provide: TokenFunctionalRepository, useClass: JwtRepository }],
+  exports: [TokenFunctionalRepository],
 })
 export class JwtCoreModule {}

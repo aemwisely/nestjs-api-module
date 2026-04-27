@@ -52,16 +52,16 @@ export class XLSXProvider {
     return { worksheet, endRow: startRow };
   }
 
-  private buildDataTable(worksheet: any, dataSheets: string[][], endIndexHeader: number) {
+  private buildDataTable(worksheet: any, dataSheets: string[][], startRow: number) {
+    let currentRow = startRow + 1;
+
     for (const item of dataSheets) {
       for (const [index, data] of item.entries()) {
-        const currentIndex = index + 1;
-
-        worksheet.cell(endIndexHeader + 1, currentIndex).string(`${data}`);
+        worksheet.cell(currentRow, index + 1).string(`${data ?? ''}`);
       }
-    }
 
-    endIndexHeader++;
+      currentRow++;
+    }
   }
 
   async buildFile(

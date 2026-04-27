@@ -123,13 +123,13 @@ export class FileStorageService implements FileStorageFunctionalRepository {
     return this.minioClient.presignedGetObject(bucket, key, expiry);
   }
 
-  private async updateMediaObjectDueDate(mediaObject: MediaObjectEntity, url: string) {
+  private async updateMediaObjectExpireDate(mediaObject: MediaObjectEntity, url: string) {
     await this.datasource
       .createQueryBuilder()
       .update(MediaObjectEntity)
       .set({
         url: url,
-        due_date: new Date(dayjs().add(7, 'day').toISOString()),
+        expire_date: new Date(dayjs().add(7, 'day').toISOString()),
       })
       .where('id = :id', { id: mediaObject.id })
       .execute();
@@ -145,9 +145,9 @@ export class FileStorageService implements FileStorageFunctionalRepository {
 
     // 2️⃣ Only handle presigning for the private bucket
     if (v.bucket && v.key) {
-      if (!v?.expire_date || v?.expire_date < currentDate) {
+      if (!v?.expire_date || v.expire_date < currentDate) {
         const url = await this.presignedUrl(v.bucket, v.key);
-        await this.updateMediaObjectDueDate(v, url);
+        await this.updateMediaObjectExpireDate(v, url);
         return url;
       }
     }
