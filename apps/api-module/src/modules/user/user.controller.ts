@@ -13,24 +13,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { IsOptional, IsInt, Min, Max } from 'class-validator';
-import { Type } from 'class-transformer';
-
-class PaginationQueryDto {
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page?: number = 1;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(100)
-  limit?: number = 10;
-}
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CommonFilter } from '@libs/common/base';
 
 @Controller('user')
 @ApiTags('User-management')
@@ -68,30 +52,22 @@ export class UserController {
    * @returns Paginated list of users
    */
   @Get('/')
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  async findAll(@Query() query: PaginationQueryDto) {
+  async findAll(@Query() query: CommonFilter) {
     try {
-      const { page = 1, limit = 10 } = query;
-      const offset = (page - 1) * limit;
+      const { page, limit, getPageCount } = query;
 
       // Note: This assumes the use case supports pagination.
       // In a real implementation, you might need to modify GetUserUseCase
       // to accept pagination parameters.
-      const data = await this.usecaseGetUser.getAllEntity();
-
-      // Simple pagination implementation (for demo)
-      // In production, implement proper pagination in repository layer
-      const paginatedData = data.slice(offset, offset + limit);
-      const total = data.length;
+      const [data, count] = await this.usecaseGetUser.findAllEntityWithPagination(query);
 
       return {
-        result: paginatedData,
+        result: data,
         pagination: {
           page,
           limit,
-          total,
-          totalPages: Math.ceil(total / limit),
+          count,
+          page_count: getPageCount(limit, count),
         },
       };
     } catch (error) {
