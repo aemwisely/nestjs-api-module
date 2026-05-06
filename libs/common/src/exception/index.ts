@@ -5,3 +5,4 @@ export * from './typeorm-exception.filter';
 export * from './http-exception';
 export * from './auth.exception';
 export * from './token.exception';
+export * from './permission.exception';

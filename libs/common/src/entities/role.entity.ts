@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from '../base';
+import { RoleMenuEntity } from './role-menu.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'role' })
@@ -28,4 +29,7 @@ export class RoleEntity extends CommonEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'updated_by_id' })
   updated_by: UserEntity;
+
+  @OneToMany(() => RoleMenuEntity, (roleMenu) => roleMenu.role)
+  role_menus: RoleMenuEntity[];
 }

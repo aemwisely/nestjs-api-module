@@ -16,6 +16,7 @@ import {
 } from '@libs/core/infrastructure';
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiOkResponse } from '@nestjs/swagger';
+import { PermissionGuard } from '@libs/core/presentation';
 
 /**
  * Authentication Controller
@@ -83,7 +84,7 @@ export class AuthController {
    * Revoke current token or all tokens for the user
    */
   @Post('/revoke')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async revokeToken(
@@ -115,7 +116,7 @@ export class AuthController {
    * Invalidates old token and issues new one
    */
   @Post('/renew')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: TokenResponseDto })
@@ -135,7 +136,7 @@ export class AuthController {
    * Get current authenticated user information
    */
   @Get('/self')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, PermissionGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async getSelf(@Context() context: IContext) {

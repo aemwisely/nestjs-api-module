@@ -3,7 +3,7 @@ import { CommonFilter } from '@libs/common/base';
 import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
 import { Context, IContext } from '@libs/common/decorator';
 import { CreateMediaUseCase, GetMediaUseCase } from '@libs/core/application/file-storage';
-import { BucketList, FileUpload } from '@libs/core/presentation';
+import { BucketList, FileUpload, PermissionGuard } from '@libs/core/presentation';
 import {
   Body,
   Controller,
@@ -19,7 +19,7 @@ import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('media-object')
 @ApiTags('Media-object')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class MediaObjectController {
   constructor(

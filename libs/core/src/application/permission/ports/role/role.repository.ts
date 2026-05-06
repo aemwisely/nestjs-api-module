@@ -5,4 +5,5 @@ export abstract class RoleFunctionalRepository {
   abstract create(dto: Partial<RoleEntity>): RoleEntity;
   abstract save(roleEntity: RoleEntity): Promise<RoleEntity>;
   abstract findOne(opt: FindOneOptions<RoleEntity>): Promise<RoleEntity | null>;
+  abstract findAll(): Promise<RoleEntity[]>;
 }

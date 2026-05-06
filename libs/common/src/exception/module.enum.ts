@@ -2,6 +2,7 @@ export enum EModule {
   AUTH = '00',
   USER = '01',
   TOKEN = '02',
+  PERMISSION = '03',
 }
 
 export enum EMessage {
@@ -14,4 +15,5 @@ export enum EMessage {
   TOKEN_ALREADY_USED = 'Token has already been used.',
   TOKEN_OWNER_MISMATCH = 'Token does not belong to the current user.',
   TOKEN_OPERATION_FAILED = 'Token operation failed.',
+  FORBIDDEN = 'You do not have permission to access this resource.',
 }

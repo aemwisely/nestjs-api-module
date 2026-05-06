@@ -1,6 +1,7 @@
 import { JwtGuard } from '@libs/common/authentication';
 import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
 import { CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
+import { PermissionGuard } from '@libs/core/presentation';
 import { CreateUserDto } from '@libs/core/presentation';
 import {
   Body,
@@ -18,7 +19,7 @@ import { CommonFilter } from '@libs/common/base';
 
 @Controller('user')
 @ApiTags('User-management')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class UserController {
   constructor(

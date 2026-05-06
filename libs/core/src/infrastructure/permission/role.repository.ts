@@ -23,4 +23,10 @@ export class RoleRepository implements RoleFunctionalRepository {
   async findOne(opt: FindOneOptions<RoleEntity>): Promise<RoleEntity | null> {
     return await this.roleRepository.findOne(opt);
   }
+
+  async findAll(): Promise<RoleEntity[]> {
+    return await this.roleRepository.find({
+      order: { created_at: 'DESC' },
+    });
+  }
 }
