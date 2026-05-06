@@ -41,6 +41,15 @@ export abstract class TokenStorageRepository {
   abstract revokeToken(tokenId: string): Promise<void>;
 
   /**
+   * Atomically revoke the current token and save the replacement token.
+   * Returns null when the current token has already been revoked by another request.
+   */
+  abstract rotateToken(
+    currentTokenId: string,
+    replacementToken: TokenModel,
+  ): Promise<TokenModel | null>;
+
+  /**
    * Revoke all tokens for a user
    */
   abstract revokeAllUserTokens(userId: string): Promise<void>;

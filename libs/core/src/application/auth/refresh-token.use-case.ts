@@ -64,19 +64,24 @@ export class RefreshTokenUseCase {
         });
       }
 
-      // Generate new access token
-      const newAccessToken = await this.tokenFunctionalRepository.generateAccessToken(payload);
+      const tokenPayload = {
+        sub: storedToken.user_id,
+        email: user.email,
+        session_id: storedToken.session_id,
+      };
+
+      const newAccessToken = await this.tokenFunctionalRepository.generateAccessToken(tokenPayload);
 
       let newRefreshToken: string | undefined;
       let updatedToken = storedToken;
+      const now = new Date();
+      const accessTokenExpiresIn = 15 * 60 * 1000; // 15 minutes
 
       // If token rotation is enabled, generate new refresh token
       if (renewRefreshToken) {
-        newRefreshToken = await this.tokenFunctionalRepository.generateRefreshToken(payload);
+        newRefreshToken = await this.tokenFunctionalRepository.generateRefreshToken(tokenPayload);
 
         // Calculate expiration times
-        const now = new Date();
-        const accessTokenExpiresIn = 15 * 60 * 1000; // 15 minutes
         const refreshTokenExpiresIn = 3 * 24 * 60 * 60 * 1000; // 3 days
 
         // Create new token entry with rotated tokens
@@ -89,14 +94,26 @@ export class RefreshTokenUseCase {
           refresh_expires_at: new Date(now.getTime() + refreshTokenExpiresIn),
         });
 
-        // Save new token and revoke old one
-        await this.tokenStorageRepository.saveToken(newToken);
-        await this.tokenStorageRepository.revokeToken(storedToken.id);
+        const rotatedToken = await this.tokenStorageRepository.rotateToken(
+          storedToken.id,
+          newToken,
+        );
 
-        updatedToken = newToken;
+        if (!rotatedToken) {
+          throw new UserUnauthorizedException({
+            message: 'Refresh token has already been used',
+          });
+        }
+
+        updatedToken = rotatedToken;
       } else {
-        // Just use the existing refresh token
         newRefreshToken = refreshToken;
+        updatedToken = await this.tokenStorageRepository.updateToken(
+          storedToken.withAccessToken(
+            newAccessToken,
+            new Date(now.getTime() + accessTokenExpiresIn),
+          ),
+        );
       }
 
       // Update user's current session and refresh token

@@ -60,6 +60,37 @@ export class RevokeTokenUseCase {
   }
 
   /**
+   * Revoke the access token used by the current request.
+   */
+  async revokeCurrentToken(accessToken: string, context: IContext): Promise<void> {
+    try {
+      const token = await this.tokenStorageRepository.findByAccessToken(accessToken);
+
+      if (!token) {
+        throw new UserUnauthorizedException({
+          message: 'Token not found',
+        });
+      }
+
+      if (token.user_id !== context.sub) {
+        throw new UserUnauthorizedException({
+          message: 'Unauthorized to revoke this token',
+        });
+      }
+
+      await this.tokenStorageRepository.revokeToken(token.id);
+    } catch (error) {
+      if (error instanceof UserUnauthorizedException) {
+        throw error;
+      }
+      throw new UserUnauthorizedException({
+        message: 'Token revocation failed',
+        error: error.message,
+      });
+    }
+  }
+
+  /**
    * Revoke token by refresh token (used during logout)
    */
   async revokeByRefreshToken(refreshToken: string, context: IContext): Promise<void> {

@@ -76,13 +76,20 @@ export class RenewTokenUseCase {
         refresh_expires_at: new Date(now.getTime() + refreshTokenExpiresIn),
       });
 
-      // Save new token and revoke old one
-      await this.tokenStorageRepository.saveToken(renewedToken);
-      await this.tokenStorageRepository.revokeToken(currentToken.id);
+      const rotatedToken = await this.tokenStorageRepository.rotateToken(
+        currentToken.id,
+        renewedToken,
+      );
+
+      if (!rotatedToken) {
+        throw new UserUnauthorizedException({
+          message: 'Current token has already been renewed',
+        });
+      }
 
       return {
-        access_token: newAccessToken,
-        refresh_token: newRefreshToken,
+        access_token: rotatedToken.access_token,
+        refresh_token: rotatedToken.refresh_token,
       };
     } catch (error) {
       if (error instanceof UserUnauthorizedException) {

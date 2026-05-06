@@ -66,6 +66,21 @@ export class TokenModel {
     this.is_revoked = true;
   }
 
+  withAccessToken(accessToken: string, expiresAt: Date): TokenModel {
+    return new TokenModel(
+      this.id,
+      this.user_id,
+      accessToken,
+      this.refresh_token,
+      this.session_id,
+      this.is_revoked,
+      expiresAt,
+      this.refresh_expires_at,
+      this.created_at,
+      new Date(),
+    );
+  }
+
   /**
    * Create a new token model
    */

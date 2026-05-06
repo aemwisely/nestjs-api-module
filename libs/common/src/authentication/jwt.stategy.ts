@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { IContext } from '../decorator';
 import { UserEntity, TokenEntity } from '../entities';
 import { UserUnauthorizedException } from '../exception';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -17,10 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: configService.get<string>('JWT_SECRET', 'default'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: IContext): Promise<IContext> {
+  async validate(request: Request, payload: IContext): Promise<IContext> {
     const user = await this.datasource.manager.findOne(UserEntity, {
       where: { id: payload.sub },
     });
@@ -29,21 +31,27 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UserUnauthorizedException({ context: payload });
     }
 
-    // Check if token is revoked
-    if (payload.session_id) {
-      const token = await this.datasource.manager.findOne(TokenEntity, {
-        where: {
-          session_id: payload.session_id,
-          user_id: payload.sub,
-          is_revoked: false,
-        },
-      });
+    const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
-      if (!token) {
-        throw new UserUnauthorizedException({
-          message: 'Token has been revoked or is invalid',
-        });
-      }
+    if (!accessToken || !payload.session_id) {
+      throw new UserUnauthorizedException({
+        message: 'Token has been revoked or is invalid',
+      });
+    }
+
+    const token = await this.datasource.manager.findOne(TokenEntity, {
+      where: {
+        access_token: accessToken,
+        session_id: payload.session_id,
+        user_id: payload.sub,
+        is_revoked: false,
+      },
+    });
+
+    if (!token) {
+      throw new UserUnauthorizedException({
+        message: 'Token has been revoked or is invalid',
+      });
     }
 
     return {

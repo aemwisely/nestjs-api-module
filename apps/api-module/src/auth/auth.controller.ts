@@ -86,7 +86,11 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
-  async revokeToken(@Body() dto: RevokeTokenDto, @Context() context: IContext) {
+  async revokeToken(
+    @Body() dto: RevokeTokenDto,
+    @Context() context: IContext,
+    @AccessToken() accessToken: string,
+  ) {
     if (dto.revoke_all) {
       await this.revokeTokenUseCase.revokeAllUserTokens(context);
       return {
@@ -98,8 +102,7 @@ export class AuthController {
         result: { message: 'Token revoked successfully' },
       };
     } else {
-      // Logout - revoke current token
-      await this.revokeTokenUseCase.revokeByRefreshToken('', context);
+      await this.revokeTokenUseCase.revokeCurrentToken(accessToken, context);
       return {
         result: { message: 'Logged out successfully' },
       };
