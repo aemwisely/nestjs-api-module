@@ -15,10 +15,7 @@ export class LoginUseCase {
     private hasher: PasswordHasher,
   ) {}
 
-  async execute(
-    email: string,
-    password: string,
-  ): Promise<{ access_token: string; refresh_token: string }> {
+  async execute(email: string, password: string): Promise<{ access_token: string }> {
     try {
       const findUser = await this.getUserUseCase.getOneByEmail(email);
 
@@ -42,7 +39,7 @@ export class LoginUseCase {
         refresh_token: refreshToken,
       });
 
-      return { access_token: accessToken, refresh_token: refreshToken };
+      return { access_token: accessToken };
     } catch (error) {
       throw error;
     }

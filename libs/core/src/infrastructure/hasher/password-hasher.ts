@@ -5,8 +5,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class BcryptPasswordHasher implements PasswordHasher {
   async hash(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
+    return bcrypt.hash(password, 10);
   }
 
   async compare(password: string, hash: string): Promise<boolean> {
