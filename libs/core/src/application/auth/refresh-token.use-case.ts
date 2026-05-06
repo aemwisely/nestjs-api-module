@@ -2,7 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { TokenStorageRepository, TokenFunctionalRepository } from '@libs/core/application/token';
 import { GetUserUseCase } from '../user';
 import { UpdateUserUseCase } from '../user/update-user.use-case';
-import { UserUnauthorizedException } from '@libs/common/exception';
+import {
+  BaseHttpException,
+  RefreshTokenInvalidException,
+  TokenAlreadyUsedException,
+  TokenExpiredOrRevokedException,
+  TokenNotFoundException,
+  TokenOperationFailedException,
+  TokenOwnerMismatchException,
+} from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 
 /**
@@ -34,34 +42,26 @@ export class RefreshTokenUseCase {
       const payload = await this.tokenFunctionalRepository.verifyRefreshToken(refreshToken);
 
       if (!payload) {
-        throw new UserUnauthorizedException({
-          message: 'Invalid or expired refresh token',
-        });
+        throw new RefreshTokenInvalidException();
       }
 
       // Find token in storage
       const storedToken = await this.tokenStorageRepository.findByRefreshToken(refreshToken);
 
       if (!storedToken) {
-        throw new UserUnauthorizedException({
-          message: 'Refresh token not found or revoked',
-        });
+        throw new TokenNotFoundException();
       }
 
       // Check if token is still valid
       if (!storedToken.isRefreshTokenValid()) {
-        throw new UserUnauthorizedException({
-          message: 'Refresh token is expired or revoked',
-        });
+        throw new TokenExpiredOrRevokedException();
       }
 
       // Get user information
       const user = await this.getUserUseCase.getOneEntity(storedToken.user_id);
 
       if (!user) {
-        throw new UserUnauthorizedException({
-          message: 'User not found',
-        });
+        throw new TokenOwnerMismatchException({ user_id: storedToken.user_id });
       }
 
       const tokenPayload = {
@@ -100,9 +100,7 @@ export class RefreshTokenUseCase {
         );
 
         if (!rotatedToken) {
-          throw new UserUnauthorizedException({
-            message: 'Refresh token has already been used',
-          });
+          throw new TokenAlreadyUsedException();
         }
 
         updatedToken = rotatedToken;
@@ -127,13 +125,10 @@ export class RefreshTokenUseCase {
         refresh_token: renewRefreshToken ? newRefreshToken : undefined,
       };
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Token refresh failed',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 }

@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { TokenStorageRepository } from '@libs/core/application/token';
 import { IContext } from '@libs/common/decorator';
-import { UserUnauthorizedException } from '@libs/common/exception';
+import {
+  BaseHttpException,
+  TokenNotFoundException,
+  TokenOperationFailedException,
+  TokenOwnerMismatchException,
+} from '@libs/common/exception';
 
 /**
  * Revoke Token Use Case
@@ -20,27 +25,20 @@ export class RevokeTokenUseCase {
       const token = await this.tokenStorageRepository.findById(tokenId);
 
       if (!token) {
-        throw new UserUnauthorizedException({
-          message: 'Token not found',
-        });
+        throw new TokenNotFoundException();
       }
 
       // Ensure user can only revoke their own tokens
       if (token.user_id !== context.sub) {
-        throw new UserUnauthorizedException({
-          message: 'Unauthorized to revoke this token',
-        });
+        throw new TokenOwnerMismatchException();
       }
 
       await this.tokenStorageRepository.revokeToken(tokenId);
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Token revocation failed',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 
@@ -52,10 +50,7 @@ export class RevokeTokenUseCase {
     try {
       await this.tokenStorageRepository.revokeAllUserTokens(context.sub);
     } catch (error) {
-      throw new UserUnauthorizedException({
-        message: 'Failed to revoke all tokens',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 
@@ -67,26 +62,19 @@ export class RevokeTokenUseCase {
       const token = await this.tokenStorageRepository.findByAccessToken(accessToken);
 
       if (!token) {
-        throw new UserUnauthorizedException({
-          message: 'Token not found',
-        });
+        throw new TokenNotFoundException();
       }
 
       if (token.user_id !== context.sub) {
-        throw new UserUnauthorizedException({
-          message: 'Unauthorized to revoke this token',
-        });
+        throw new TokenOwnerMismatchException();
       }
 
       await this.tokenStorageRepository.revokeToken(token.id);
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Token revocation failed',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 
@@ -98,27 +86,20 @@ export class RevokeTokenUseCase {
       const token = await this.tokenStorageRepository.findByRefreshToken(refreshToken);
 
       if (!token) {
-        throw new UserUnauthorizedException({
-          message: 'Token not found',
-        });
+        throw new TokenNotFoundException();
       }
 
       // Ensure user can only revoke their own tokens
       if (token.user_id !== context.sub) {
-        throw new UserUnauthorizedException({
-          message: 'Unauthorized to revoke this token',
-        });
+        throw new TokenOwnerMismatchException();
       }
 
       await this.tokenStorageRepository.revokeToken(token.id);
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Token revocation failed',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 }

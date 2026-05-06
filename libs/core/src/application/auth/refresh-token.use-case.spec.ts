@@ -1,4 +1,4 @@
-import { UserUnauthorizedException } from '@libs/common/exception';
+import { TokenAlreadyUsedException } from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 import { RefreshTokenUseCase } from './refresh-token.use-case';
 
@@ -97,7 +97,7 @@ describe('RefreshTokenUseCase', () => {
     tokenStorageRepository.rotateToken.mockResolvedValue(null);
 
     await expect(useCase.execute('old-refresh-token', true)).rejects.toBeInstanceOf(
-      UserUnauthorizedException,
+      TokenAlreadyUsedException,
     );
   });
 

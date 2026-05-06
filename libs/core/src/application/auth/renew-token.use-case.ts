@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { TokenStorageRepository, TokenFunctionalRepository } from '@libs/core/application/token';
 import { IContext } from '@libs/common/decorator';
-import { UserUnauthorizedException } from '@libs/common/exception';
+import {
+  BaseHttpException,
+  TokenAlreadyUsedException,
+  TokenExpiredOrRevokedException,
+  TokenNotFoundException,
+  TokenOperationFailedException,
+  TokenOwnerMismatchException,
+} from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 
 /**
@@ -32,23 +39,17 @@ export class RenewTokenUseCase {
       const currentToken = await this.tokenStorageRepository.findByAccessToken(currentAccessToken);
 
       if (!currentToken) {
-        throw new UserUnauthorizedException({
-          message: 'Current token not found',
-        });
+        throw new TokenNotFoundException();
       }
 
       // Ensure token belongs to the current user
       if (currentToken.user_id !== context.sub) {
-        throw new UserUnauthorizedException({
-          message: 'Token does not match current user',
-        });
+        throw new TokenOwnerMismatchException();
       }
 
       // Verify token is still valid
       if (!currentToken.isValid()) {
-        throw new UserUnauthorizedException({
-          message: 'Current token is invalid or expired',
-        });
+        throw new TokenExpiredOrRevokedException();
       }
 
       // Generate new tokens
@@ -82,9 +83,7 @@ export class RenewTokenUseCase {
       );
 
       if (!rotatedToken) {
-        throw new UserUnauthorizedException({
-          message: 'Current token has already been renewed',
-        });
+        throw new TokenAlreadyUsedException();
       }
 
       return {
@@ -92,13 +91,10 @@ export class RenewTokenUseCase {
         refresh_token: rotatedToken.refresh_token,
       };
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Token renewal failed',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 
@@ -112,10 +108,7 @@ export class RenewTokenUseCase {
       // Revoke all existing tokens
       await this.tokenStorageRepository.revokeAllUserTokens(context.sub);
     } catch (error) {
-      throw new UserUnauthorizedException({
-        message: 'Failed to renew all user tokens',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 
@@ -134,15 +127,11 @@ export class RenewTokenUseCase {
       const token = await this.tokenStorageRepository.findByAccessToken(accessToken);
 
       if (!token) {
-        throw new UserUnauthorizedException({
-          message: 'Token not found',
-        });
+        throw new TokenNotFoundException();
       }
 
       if (token.user_id !== context.sub) {
-        throw new UserUnauthorizedException({
-          message: 'Token does not match current user',
-        });
+        throw new TokenOwnerMismatchException();
       }
 
       const now = new Date();
@@ -156,13 +145,10 @@ export class RenewTokenUseCase {
         hours_until_expiration: hoursUntilExpiration,
       };
     } catch (error) {
-      if (error instanceof UserUnauthorizedException) {
+      if (error instanceof BaseHttpException) {
         throw error;
       }
-      throw new UserUnauthorizedException({
-        message: 'Failed to check token expiration',
-        error: error.message,
-      });
+      throw new TokenOperationFailedException({ error: error.message });
     }
   }
 }

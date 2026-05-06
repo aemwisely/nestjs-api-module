@@ -1,4 +1,4 @@
-import { UserUnauthorizedException } from '@libs/common/exception';
+import { TokenOwnerMismatchException } from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 import { RevokeTokenUseCase } from './revoke-token.use-case';
 
@@ -60,7 +60,7 @@ describe('RevokeTokenUseCase', () => {
     );
 
     await expect(useCase.revokeCurrentToken('another-access-token', context)).rejects.toBeInstanceOf(
-      UserUnauthorizedException,
+      TokenOwnerMismatchException,
     );
     expect(tokenStorageRepository.revokeToken).not.toHaveBeenCalled();
   });

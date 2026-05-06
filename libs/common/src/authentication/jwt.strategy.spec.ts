@@ -1,4 +1,4 @@
-import { UserUnauthorizedException } from '../exception';
+import { AccessTokenInvalidException } from '../exception';
 import { JwtStrategy } from './jwt.stategy';
 
 describe('JwtStrategy', () => {
@@ -73,6 +73,6 @@ describe('JwtStrategy', () => {
           session_id: '019b02b0-0000-7000-8000-000000000002',
         },
       ),
-    ).rejects.toBeInstanceOf(UserUnauthorizedException);
+    ).rejects.toBeInstanceOf(AccessTokenInvalidException);
   });
 });
