@@ -39,6 +39,9 @@ The global `HttpExceptionFilter` wraps that payload into the public API response
 | `00` | Auth |
 | `01` | User |
 | `02` | Token |
+| `03` | Permission |
+| `04` | Media Object |
+| `05` | Report |
 
 ## Error Types
 

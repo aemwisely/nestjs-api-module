@@ -1,6 +1,7 @@
 import { JwtGuard } from '@libs/common/authentication';
 import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
-import { Context, IContext } from '@libs/common/decorator';
+import { Context, IContext, PermissionModuleCode } from '@libs/common/decorator';
+import { EModule } from '@libs/common/exception';
 import {
   CreateMenuUseCase,
   CreateRoleUseCase,
@@ -31,6 +32,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('permission')
 @ApiTags('Permission')
+@PermissionModuleCode(EModule.PERMISSION)
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class PermissionController {

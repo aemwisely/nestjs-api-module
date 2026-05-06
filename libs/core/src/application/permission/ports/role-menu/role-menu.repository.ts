@@ -21,7 +21,7 @@ export abstract class RoleMenuFunctionalRepository {
   }): Promise<RoleMenuEntity>;
   abstract findPermissionDecision(params: {
     role_id: string;
-    menu_codes: string[];
+    module_code: string;
     required_permission: PermissionAction;
   }): Promise<PermissionDecision | null>;
 }

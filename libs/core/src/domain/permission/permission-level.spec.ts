@@ -1,9 +1,5 @@
 import { PermissionLevel } from '@libs/common/entities';
-import {
-  buildMenuCode,
-  canAccess,
-  getRequiredPermissionByMethod,
-} from './permission-level';
+import { canAccess, getRequiredPermissionByMethod } from './permission-level';
 
 describe('permission-level', () => {
   it('maps readonly http methods to READ and write methods to WRITE', () => {
@@ -21,9 +17,5 @@ describe('permission-level', () => {
     expect(canAccess(PermissionLevel.WRITE, 'WRITE')).toBe(true);
     expect(canAccess(PermissionLevel.WRITE, 'READ')).toBe(false);
     expect(canAccess(PermissionLevel.NONE, 'READ')).toBe(false);
-  });
-
-  it('builds stable method path menu codes', () => {
-    expect(buildMenuCode('get', '/user/:id')).toBe('GET:/user/:id');
   });
 });

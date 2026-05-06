@@ -3,6 +3,8 @@ export enum EModule {
   USER = '01',
   TOKEN = '02',
   PERMISSION = '03',
+  MEDIA_OBJECT = '04',
+  REPORT = '05',
 }
 
 export enum EMessage {

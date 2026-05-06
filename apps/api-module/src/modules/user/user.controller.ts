@@ -1,5 +1,8 @@
 import { JwtGuard } from '@libs/common/authentication';
+import { CommonFilter } from '@libs/common/base';
 import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
+import { PermissionModuleCode } from '@libs/common/decorator';
+import { EModule } from '@libs/common/exception';
 import { CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
 import { PermissionGuard } from '@libs/core/presentation';
 import { CreateUserDto } from '@libs/core/presentation';
@@ -15,10 +18,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CommonFilter } from '@libs/common/base';
 
 @Controller('user')
 @ApiTags('User-management')
+@PermissionModuleCode(EModule.USER)
 @UseGuards(JwtGuard, PermissionGuard)
 @ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class UserController {

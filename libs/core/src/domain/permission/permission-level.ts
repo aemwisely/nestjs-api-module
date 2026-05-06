@@ -19,7 +19,3 @@ export function canAccess(permission: PermissionLevel, required: PermissionActio
 
   return permission === required;
 }
-
-export function buildMenuCode(method: string, path: string): string {
-  return `${method.toUpperCase()}:${path}`;
-}

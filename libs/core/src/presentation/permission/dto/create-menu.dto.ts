@@ -10,7 +10,7 @@ export class CreateMenuDto {
   @IsString()
   key: string;
 
-  @ApiProperty({ description: 'Route permission code, e.g. GET:/user/:id' })
+  @ApiProperty({ description: 'Module code from EModule/ErrorMessage.md, e.g. 01 for User' })
   @IsString()
   code: string;
 

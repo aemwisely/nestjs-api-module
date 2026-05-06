@@ -1,6 +1,7 @@
 import { JwtGuard } from '@libs/common/authentication';
 import { JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN } from '@libs/common/config/swagger';
-import { Context, IContext, AccessToken } from '@libs/common/decorator';
+import { Context, IContext, AccessToken, PermissionModuleCode } from '@libs/common/decorator';
+import { EModule } from '@libs/common/exception';
 import {
   GetSelfUseCase,
   LoginUseCase,
@@ -29,6 +30,7 @@ import { PermissionGuard } from '@libs/core/presentation';
  */
 @Controller('authentication')
 @ApiTags('Authentication')
+@PermissionModuleCode(EModule.AUTH)
 export class AuthController {
   constructor(
     private loginUseCase: LoginUseCase,

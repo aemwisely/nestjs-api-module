@@ -57,7 +57,7 @@ export class RoleMenuRepository implements RoleMenuFunctionalRepository {
 
   async findPermissionDecision(params: {
     role_id: string;
-    menu_codes: string[];
+    module_code: string;
     required_permission: PermissionAction;
   }): Promise<PermissionDecision | null> {
     const permissionRank = `CASE roleMenu.permission
@@ -77,9 +77,7 @@ export class RoleMenuRepository implements RoleMenuFunctionalRepository {
       .where('roleMenu.role_id = :roleId', { roleId: params.role_id })
       .andWhere('menu.is_active = true')
       .andWhere('role.is_active = true')
-      .andWhere('(menu.code IN (:...menuCodes) OR menu.key IN (:...menuCodes))', {
-        menuCodes: params.menu_codes,
-      })
+      .andWhere('menu.code = :moduleCode', { moduleCode: params.module_code })
       .orderBy(permissionRank, 'DESC')
       .setParameter('requiredPermission', params.required_permission)
       .limit(1)
