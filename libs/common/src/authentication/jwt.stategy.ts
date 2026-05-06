@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { IContext } from '../decorator';
-import { UserEntity } from '../entities';
+import { UserEntity, TokenEntity } from '../entities';
 import { UserUnauthorizedException } from '../exception';
 
 @Injectable()
@@ -29,9 +29,27 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UserUnauthorizedException({ context: payload });
     }
 
+    // Check if token is revoked
+    if (payload.session_id) {
+      const token = await this.datasource.manager.findOne(TokenEntity, {
+        where: {
+          session_id: payload.session_id,
+          user_id: payload.sub,
+          is_revoked: false,
+        },
+      });
+
+      if (!token) {
+        throw new UserUnauthorizedException({
+          message: 'Token has been revoked or is invalid',
+        });
+      }
+    }
+
     return {
       sub: user.id,
       email: user.email,
+      session_id: payload.session_id,
     };
   }
 }

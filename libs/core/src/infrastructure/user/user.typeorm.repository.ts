@@ -70,6 +70,7 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
       await this.repository.update({ id }, body);
       return true;
     } catch (error) {
+      console.log(error);
       return false;
     }
   }

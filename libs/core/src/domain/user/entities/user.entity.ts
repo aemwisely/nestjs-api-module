@@ -8,6 +8,8 @@ export type TUserEntity = {
   email: string;
   password: string;
   is_active: boolean;
+  session_id?: string;
+  refresh_token?: string;
   role_id: string;
 };
 
@@ -19,6 +21,8 @@ export class UserModel {
     public readonly email: string,
     public readonly password: string,
     public is_active: boolean,
+    public session_id: string | undefined,
+    public refresh_token: string | undefined,
     public role_id: string,
   ) {}
 
@@ -44,6 +48,8 @@ export class UserModel {
       props.email,
       props.password,
       true,
+      undefined,
+      undefined,
       props.role_id,
     );
   }
@@ -56,6 +62,8 @@ export class UserModel {
       entity.email,
       entity.password,
       entity.is_active,
+      entity.session_id,
+      entity.refresh_token,
       entity.role_id,
     );
   }
