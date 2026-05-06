@@ -38,17 +38,17 @@ export class PermissionGuard implements CanActivate {
     }
 
     const decision = await this.checkPermissionUseCase.execute({
-      role_id: user.role_id,
+      roleId: user.role_id,
       method: request.method,
-      module_code: moduleCode,
+      moduleCode: moduleCode,
     });
 
     if (!decision.allowed) {
       throw new PermissionForbiddenException({
-        module_code: moduleCode,
+        moduleCode: moduleCode,
         path: request.path,
         method: request.method,
-        required_permission: decision.required_permission,
+        requiredPermission: decision.required_permission,
       });
     }
 

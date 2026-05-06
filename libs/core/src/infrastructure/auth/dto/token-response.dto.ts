@@ -6,24 +6,28 @@ import { ApiProperty } from '@nestjs/swagger';
  */
 export class TokenResponseDto {
   @ApiProperty({
+    name: 'access_token',
     description: 'Access token (JWT) - valid for 15 minutes',
   })
-  access_token: string;
+  accessToken: string;
 
   @ApiProperty({
+    name: 'refresh_token',
     description: 'Refresh token (JWT) - valid for 3 days. Optional if not renewed',
     required: false,
   })
-  refresh_token?: string;
+  refreshToken?: string;
 
   @ApiProperty({
+    name: 'token_type',
     description: 'Token type (Bearer)',
     default: 'Bearer',
   })
-  token_type: string = 'Bearer';
+  tokenType: string = 'Bearer';
 
   @ApiProperty({
+    name: 'expires_in',
     description: 'Expiration time in seconds',
   })
-  expires_in: number;
+  expiresIn: number;
 }

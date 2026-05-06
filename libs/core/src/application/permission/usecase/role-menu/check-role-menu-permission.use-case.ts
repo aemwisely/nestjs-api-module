@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { RoleMenuFunctionalRepository } from '../../ports';
 
 export type CheckRoleMenuPermissionInput = {
-  role_id: string;
+  roleId: string;
   method: string;
-  module_code: string;
+  moduleCode: string;
 };
 
 export type CheckRoleMenuPermissionResult = {
@@ -21,8 +21,8 @@ export class CheckRoleMenuPermissionUseCase {
   async execute(input: CheckRoleMenuPermissionInput): Promise<CheckRoleMenuPermissionResult> {
     const requiredPermission = getRequiredPermissionByMethod(input.method);
     const decision = await this.roleMenuRepository.findPermissionDecision({
-      role_id: input.role_id,
-      module_code: input.module_code,
+      role_id: input.roleId,
+      module_code: input.moduleCode,
       required_permission: requiredPermission,
     });
 

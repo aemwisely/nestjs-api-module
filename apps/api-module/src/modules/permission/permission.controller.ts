@@ -50,8 +50,8 @@ export class PermissionController {
   async createRole(@Body() body: CreateRoleDto, @Context() context: IContext) {
     const data = await this.createRoleUseCase.execute({
       ...body,
-      created_by_id: context.sub,
-      updated_by_id: context.sub,
+      createdById: context.sub,
+      updatedById: context.sub,
     });
 
     return { result: data };
@@ -76,24 +76,24 @@ export class PermissionController {
     return { result: data };
   }
 
-  @Get('/roles/:roleId/menus')
-  async getRoleMenus(@Param('roleId') roleId: string) {
+  @Get('/roles/:role_id/menus')
+  async getRoleMenus(@Param('role_id') roleId: string) {
     const data = await this.getRoleMenuUseCase.findAllByRole(roleId);
     return { result: data };
   }
 
-  @Put('/roles/:roleId/menus/:menuId')
+  @Put('/roles/:role_id/menus/:menu_id')
   async upsertRoleMenuPermission(
-    @Param('roleId') roleId: string,
-    @Param('menuId', ParseIntPipe) menuId: number,
+    @Param('role_id') roleId: string,
+    @Param('menu_id', ParseIntPipe) menuId: number,
     @Body() body: UpsertRoleMenuPermissionDto,
     @Context() context: IContext,
   ) {
     const data = await this.upsertRoleMenuPermissionUseCase.execute({
-      role_id: roleId,
-      menu_id: menuId,
+      roleId: roleId,
+      menuId: menuId,
       permission: body.permission,
-      updated_by_id: context.sub,
+      updatedById: context.sub,
     });
 
     return { result: data };

@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { RoleMenuFunctionalRepository } from '../../ports';
 
 export type UpsertRoleMenuPermissionInput = {
-  role_id: string;
-  menu_id: number;
+  roleId: string;
+  menuId: number;
   permission: PermissionLevel;
-  updated_by_id: string;
+  updatedById: string;
 };
 
 @Injectable()
@@ -14,6 +14,11 @@ export class UpsertRoleMenuPermissionUseCase {
   constructor(private roleMenuRepository: RoleMenuFunctionalRepository) {}
 
   async execute(input: UpsertRoleMenuPermissionInput): Promise<RoleMenuEntity> {
-    return await this.roleMenuRepository.upsertPermission(input);
+    return await this.roleMenuRepository.upsertPermission({
+      role_id: input.roleId,
+      menu_id: input.menuId,
+      permission: input.permission,
+      updated_by_id: input.updatedById,
+    });
   }
 }

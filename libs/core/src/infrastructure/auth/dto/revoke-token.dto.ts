@@ -7,17 +7,19 @@ import { IsOptional } from 'class-validator';
  */
 export class RevokeTokenDto {
   @ApiProperty({
+    name: 'token_id',
     description: 'Token ID to revoke (optional). If not provided, revokes current token',
     required: false,
   })
   @IsOptional()
-  token_id?: string;
+  tokenId?: string;
 
   @ApiProperty({
+    name: 'revoke_all',
     description: 'If true, revoke all tokens for the user (logout from all devices)',
     required: false,
     default: false,
   })
   @IsOptional()
-  revoke_all?: boolean = false;
+  revokeAll?: boolean = false;
 }

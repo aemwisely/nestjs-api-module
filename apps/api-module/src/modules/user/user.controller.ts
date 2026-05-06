@@ -71,7 +71,7 @@ export class UserController {
           page,
           limit,
           count,
-          page_count: getPageCount(limit, count),
+          pageCount: getPageCount(limit, count),
         },
       };
     } catch (error) {

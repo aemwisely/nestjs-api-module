@@ -14,10 +14,10 @@ export class CreateUserUseCase {
   async execute(dto: CreateUserDto) {
     const createEntity = UserModel.create({
       email: dto.email,
-      first_name: dto.first_name,
-      last_name: dto.last_name,
+      first_name: dto.firstName,
+      last_name: dto.lastName,
       password: await this.hasher.hash(dto.password),
-      role_id: dto.role_id,
+      role_id: dto.roleId,
     });
 
     const entity = await this.repository.save(createEntity);

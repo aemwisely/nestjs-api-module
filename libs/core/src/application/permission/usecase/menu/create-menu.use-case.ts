@@ -6,7 +6,7 @@ export type CreateMenuInput = {
   title: string;
   key: string;
   code: string;
-  is_active?: boolean;
+  isActive?: boolean;
 };
 
 @Injectable()
@@ -18,7 +18,7 @@ export class CreateMenuUseCase {
       title: input.title,
       key: input.key,
       code: input.code,
-      is_active: input.is_active ?? true,
+      is_active: input.isActive ?? true,
     });
 
     return await this.menuRepository.save(entity);

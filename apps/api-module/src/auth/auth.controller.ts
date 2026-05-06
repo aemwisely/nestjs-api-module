@@ -52,8 +52,8 @@ export class AuthController {
     return {
       result: {
         ...data,
-        token_type: 'Bearer',
-        expires_in: 15 * 60, // 15 minutes in seconds
+        tokenType: 'Bearer',
+        expiresIn: 15 * 60, // 15 minutes in seconds
       },
     };
   }
@@ -69,14 +69,14 @@ export class AuthController {
   @ApiOkResponse({ type: TokenResponseDto })
   async refreshToken(@Body() dto: RefreshTokenDto) {
     const data = await this.refreshTokenUseCase.execute(
-      dto.refresh_token,
-      dto.renew_refresh_token ?? true,
+      dto.refreshToken,
+      dto.renewRefreshToken ?? true,
     );
     return {
       result: {
         ...data,
-        token_type: 'Bearer',
-        expires_in: 15 * 60, // 15 minutes in seconds
+        tokenType: 'Bearer',
+        expiresIn: 15 * 60, // 15 minutes in seconds
       },
     };
   }
@@ -94,13 +94,13 @@ export class AuthController {
     @Context() context: IContext,
     @AccessToken() accessToken: string,
   ) {
-    if (dto.revoke_all) {
+    if (dto.revokeAll) {
       await this.revokeTokenUseCase.revokeAllUserTokens(context);
       return {
         result: { message: 'All tokens revoked successfully' },
       };
-    } else if (dto.token_id) {
-      await this.revokeTokenUseCase.revokeToken(dto.token_id, context);
+    } else if (dto.tokenId) {
+      await this.revokeTokenUseCase.revokeToken(dto.tokenId, context);
       return {
         result: { message: 'Token revoked successfully' },
       };
@@ -127,8 +127,8 @@ export class AuthController {
     return {
       result: {
         ...data,
-        token_type: 'Bearer',
-        expires_in: 15 * 60, // 15 minutes in seconds
+        tokenType: 'Bearer',
+        expiresIn: 15 * 60, // 15 minutes in seconds
       },
     };
   }

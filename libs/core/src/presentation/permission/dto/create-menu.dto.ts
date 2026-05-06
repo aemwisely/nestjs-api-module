@@ -14,8 +14,8 @@ export class CreateMenuDto {
   @IsString()
   code: string;
 
-  @ApiPropertyOptional({ default: true })
+  @ApiPropertyOptional({ name: 'is_active', default: true })
   @IsOptional()
   @IsBoolean()
-  is_active?: boolean;
+  isActive?: boolean;
 }

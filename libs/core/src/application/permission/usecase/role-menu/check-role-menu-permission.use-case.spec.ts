@@ -14,9 +14,9 @@ describe('CheckRoleMenuPermissionUseCase', () => {
     const useCase = new CheckRoleMenuPermissionUseCase(repository);
 
     const result = await useCase.execute({
-      role_id: 'role-id',
+      roleId: 'role-id',
       method: 'GET',
-      module_code: '01',
+      moduleCode: '01',
     });
 
     expect(result.allowed).toBe(true);
@@ -34,9 +34,9 @@ describe('CheckRoleMenuPermissionUseCase', () => {
     const useCase = new CheckRoleMenuPermissionUseCase(repository);
 
     const result = await useCase.execute({
-      role_id: 'role-id',
+      roleId: 'role-id',
       method: 'POST',
-      module_code: '01',
+      moduleCode: '01',
     });
 
     expect(result).toEqual({
