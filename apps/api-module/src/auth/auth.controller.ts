@@ -1,4 +1,5 @@
 import { JwtGuard } from '@libs/common/authentication';
+import { JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN } from '@libs/common/config/swagger';
 import { Context, IContext, AccessToken } from '@libs/common/decorator';
 import {
   GetSelfUseCase,
@@ -61,6 +62,7 @@ export class AuthController {
    */
   @Post('/refresh')
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth(JWT_REFRESH_TOKEN)
   @ApiOkResponse({ type: TokenResponseDto })
   async refreshToken(@Body() dto: RefreshTokenDto) {
     const data = await this.refreshTokenUseCase.execute(
@@ -82,7 +84,7 @@ export class AuthController {
    */
   @Post('/revoke')
   @UseGuards(JwtGuard)
-  @ApiBearerAuth()
+  @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async revokeToken(@Body() dto: RevokeTokenDto, @Context() context: IContext) {
     if (dto.revoke_all) {
@@ -111,7 +113,7 @@ export class AuthController {
    */
   @Post('/renew')
   @UseGuards(JwtGuard)
-  @ApiBearerAuth()
+  @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: TokenResponseDto })
   async renewToken(@Context() context: IContext, @AccessToken() accessToken: string) {
@@ -131,7 +133,7 @@ export class AuthController {
    */
   @Get('/self')
   @UseGuards(JwtGuard)
-  @ApiBearerAuth()
+  @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async getSelf(@Context() context: IContext) {
     const data = await this.getSelfUseCase.execute(context);

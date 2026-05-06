@@ -3,12 +3,13 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { JwtGuard } from '@libs/common/authentication';
+import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
 import { Context, IContext } from '@libs/common/decorator';
 
 @Controller('reports')
 @ApiTags('Reports')
 @UseGuards(JwtGuard)
-@ApiBearerAuth()
+@ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class ReportsController {
   constructor(private reportService: ReportsService) {}
 

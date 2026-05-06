@@ -1,4 +1,5 @@
 import { JwtGuard } from '@libs/common/authentication';
+import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
 import { CreateUserUseCase, GetUserUseCase } from '@libs/core/application';
 import { CreateUserDto } from '@libs/core/presentation';
 import {
@@ -34,7 +35,7 @@ class PaginationQueryDto {
 @Controller('user')
 @ApiTags('User-management')
 @UseGuards(JwtGuard)
-@ApiBearerAuth()
+@ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class UserController {
   constructor(
     private usecaseGetUser: GetUserUseCase,

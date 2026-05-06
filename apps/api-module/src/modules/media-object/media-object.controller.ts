@@ -1,5 +1,6 @@
 import { JwtGuard } from '@libs/common/authentication';
 import { CommonFilter } from '@libs/common/base';
+import { JWT_ACCESS_TOKEN } from '@libs/common/config/swagger';
 import { Context, IContext } from '@libs/common/decorator';
 import { CreateMediaUseCase, GetMediaUseCase } from '@libs/core/application/file-storage';
 import { BucketList, FileUpload } from '@libs/core/presentation';
@@ -19,7 +20,7 @@ import { ApiConsumes, ApiBody, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 @Controller('media-object')
 @ApiTags('Media-object')
 @UseGuards(JwtGuard)
-@ApiBearerAuth()
+@ApiBearerAuth(JWT_ACCESS_TOKEN)
 export class MediaObjectController {
   constructor(
     private createMediaUseCase: CreateMediaUseCase,
