@@ -6,5 +6,5 @@ export default () => ({
   access_key: process.env.MINIO_ACCESS_KEY,
   secret_key: process.env.MINIO_SECRET_KEY,
   bucket: process.env.MINIO_BUCKET,
-  public: process.env.MINIO_PUBLIC,
+  public_bucket: process.env.MINIO_PUBLIC_BUCKET ?? process.env.MINIO_PUBLIC ?? 'public',
 });

@@ -14,8 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private datasource: DataSource,
     configService: ConfigService,
   ) {
+    const jwtSecret = configService.getOrThrow<string>('JWT_SECRET');
+
     super({
-      secretOrKey: configService.get<string>('JWT_SECRET', 'default'),
+      secretOrKey: jwtSecret,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       passReqToCallback: true,
@@ -27,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       where: { id: payload.sub },
     });
 
-    if (!user) {
+    if (!user?.is_active) {
       throw new UserUnauthorizedException({ context: payload });
     }
 
@@ -46,7 +48,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       },
     });
 
-    if (!token) {
+    if (!token || token.expires_at <= new Date()) {
       throw new AccessTokenInvalidException();
     }
 

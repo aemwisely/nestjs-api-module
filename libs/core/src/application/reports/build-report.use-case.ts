@@ -17,8 +17,8 @@ export class BuildReportUseCase {
    * @param {Response} response - Express response object used to send the generated XLSX file to the client.
    * @returns {Promise<void>} Resolves when the XLSX file has been generated and written to the response stream.
    */
-  async buildXLSX(dto: IBuildXLSX, response: Response) {
-    return await this.xlsxProvider.buildFile(
+  buildXLSX(dto: IBuildXLSX, response: Response): void {
+    this.xlsxProvider.buildFile(
       dto.option.topic,
       dto.option.filename,
       dto.option.sheet_name,

@@ -53,11 +53,11 @@ export class MediaObjectCoreService implements MediaObjectFunctionalRepository {
   }
 
   getQueryPagination(qs: CommonFilter): SelectQueryBuilder<MediaObjectEntity> {
-    const { pagination, getOffset, limit } = qs;
+    const { pagination, limit } = qs;
     const query = this.mediaObjectRepository.createQueryBuilder('m');
 
     if (pagination) {
-      query.skip(getOffset(qs)).take(limit);
+      query.skip(qs.getOffset(qs)).take(limit);
     }
 
     return query;

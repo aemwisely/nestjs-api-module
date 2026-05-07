@@ -1,10 +1,11 @@
-import { IncorrectPasswordException } from '@libs/common/exception';
+import { IncorrectPasswordException, UserUnauthorizedException } from '@libs/common/exception';
 import { LoginUseCase } from './login.use-case';
 
 describe('LoginUseCase', () => {
   const user = {
     id: '019b02b0-0000-7000-8000-000000000001',
     email: 'jane@example.com',
+    is_active: true,
     getPassword: jest.fn().mockReturnValue('hashed-password'),
     getPayload: jest.fn().mockReturnValue({
       sub: '019b02b0-0000-7000-8000-000000000001',
@@ -84,6 +85,20 @@ describe('LoginUseCase', () => {
     await expect(useCase.execute('jane@example.com', 'wrong-password')).rejects.toBeInstanceOf(
       IncorrectPasswordException,
     );
+    expect(tokenStorageRepository.saveToken).not.toHaveBeenCalled();
+  });
+
+  it('does not issue tokens for inactive users', async () => {
+    const { useCase, tokenStorageRepository, getUserUseCase, hasher } = createUseCase();
+    getUserUseCase.getOneByEmail.mockResolvedValue({
+      ...user,
+      is_active: false,
+    });
+
+    await expect(useCase.execute('jane@example.com', 'password')).rejects.toBeInstanceOf(
+      UserUnauthorizedException,
+    );
+    expect(hasher.compare).not.toHaveBeenCalled();
     expect(tokenStorageRepository.saveToken).not.toHaveBeenCalled();
   });
 });

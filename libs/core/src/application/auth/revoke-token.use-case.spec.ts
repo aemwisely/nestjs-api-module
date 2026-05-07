@@ -59,9 +59,9 @@ describe('RevokeTokenUseCase', () => {
       }),
     );
 
-    await expect(useCase.revokeCurrentToken('another-access-token', context)).rejects.toBeInstanceOf(
-      TokenOwnerMismatchException,
-    );
+    await expect(
+      useCase.revokeCurrentToken('another-access-token', context),
+    ).rejects.toBeInstanceOf(TokenOwnerMismatchException);
     expect(tokenStorageRepository.revokeToken).not.toHaveBeenCalled();
   });
 });

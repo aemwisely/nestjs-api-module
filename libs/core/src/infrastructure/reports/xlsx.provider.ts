@@ -64,7 +64,7 @@ export class XLSXProvider {
     }
   }
 
-  async buildFile(
+  buildFile(
     topic: string,
     filename: string,
     sheetName: string,
@@ -72,7 +72,7 @@ export class XLSXProvider {
     headers: string[],
     data: string[][],
     response: Response,
-  ): Promise<any> {
+  ): void {
     const { workbook, worksheet } = this.buildSheet(sheetName);
 
     const headerIndexStart = 3;
@@ -89,6 +89,5 @@ export class XLSXProvider {
     this.buildDataTable(worksheet, data, endRow);
 
     workbook.write(`${filename}.xlsx`, response);
-    return;
   }
 }

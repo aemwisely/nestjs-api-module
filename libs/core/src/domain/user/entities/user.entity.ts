@@ -39,6 +39,7 @@ export class UserModel {
     last_name: string;
     email: string;
     password: string;
+    is_active?: boolean;
     role_id: string;
   }): UserModel {
     return new UserModel(
@@ -47,7 +48,7 @@ export class UserModel {
       props.last_name,
       props.email,
       props.password,
-      true,
+      props.is_active ?? true,
       undefined,
       undefined,
       props.role_id,

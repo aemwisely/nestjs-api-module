@@ -15,8 +15,8 @@ describe('RefreshTokenUseCase', () => {
   function createUseCase() {
     const tokenStorageRepository = {
       findByRefreshToken: jest.fn().mockResolvedValue(storedToken),
-      rotateToken: jest.fn().mockImplementation(async (_currentTokenId, token) => token),
-      updateToken: jest.fn().mockImplementation(async (token) => token),
+      rotateToken: jest.fn().mockImplementation((_currentTokenId, token) => Promise.resolve(token)),
+      updateToken: jest.fn().mockImplementation((token) => Promise.resolve(token)),
     };
     const tokenFunctionalRepository = {
       verifyRefreshToken: jest.fn().mockResolvedValue({

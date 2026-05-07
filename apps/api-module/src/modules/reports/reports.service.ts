@@ -10,7 +10,7 @@ export class ReportsService {
     private getUserUseCase: GetUserUseCase,
   ) {}
 
-  async getBuildXLSXOfUser(response: Response, context: IContext) {
+  async getBuildXLSXOfUser(response: Response, context: IContext): Promise<void> {
     const [findContext, getEntities] = await Promise.all([
       this.getUserUseCase.getOneEntity(context.sub),
       this.getUserUseCase.getAllEntity(),
@@ -26,7 +26,7 @@ export class ReportsService {
       ];
     });
 
-    return await this.buildReportUseCase.buildXLSX(
+    this.buildReportUseCase.buildXLSX(
       {
         option: {
           filename: new Date().toISOString(),

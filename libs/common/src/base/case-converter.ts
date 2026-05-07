@@ -6,9 +6,7 @@ export function toSnakeCaseKey(key: string): string {
 }
 
 export function toCamelCaseKey(key: string): string {
-  return key.replace(/[_-]([a-zA-Z0-9])/g, (_, character: string) =>
-    character.toUpperCase(),
-  );
+  return key.replace(/[_-]([a-zA-Z0-9])/g, (_, character: string) => character.toUpperCase());
 }
 
 export function keysToSnakeCase<T>(value: T): T {

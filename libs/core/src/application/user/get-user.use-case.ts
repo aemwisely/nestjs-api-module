@@ -15,11 +15,11 @@ export class GetUserUseCase {
   }
 
   async findAllEntityWithPagination(filter: CommonFilter): Promise<[UserEntity[], number]> {
-    const { pagination, getOffset, limit } = filter;
+    const { pagination, limit } = filter;
     const queryBuilder = this.repository.useQueryBuilder();
 
     if (pagination) {
-      queryBuilder.skip(getOffset(filter)).take(limit);
+      queryBuilder.skip(filter.getOffset(filter)).take(limit);
     }
 
     const [data, count] = await queryBuilder.getManyAndCount();

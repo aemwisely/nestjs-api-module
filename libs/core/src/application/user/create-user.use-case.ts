@@ -17,6 +17,7 @@ export class CreateUserUseCase {
       first_name: dto.firstName,
       last_name: dto.lastName,
       password: await this.hasher.hash(dto.password),
+      is_active: dto.isActive,
       role_id: dto.roleId,
     });
 

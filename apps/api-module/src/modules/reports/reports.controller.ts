@@ -17,7 +17,7 @@ export class ReportsController {
   constructor(private reportService: ReportsService) {}
 
   @Post('/xlsx/user')
-  async getReportUser(@Res() res: Response, @Context() context: IContext) {
-    return await this.reportService.getBuildXLSXOfUser(res, context);
+  async getReportUser(@Res() res: Response, @Context() context: IContext): Promise<void> {
+    await this.reportService.getBuildXLSXOfUser(res, context);
   }
 }

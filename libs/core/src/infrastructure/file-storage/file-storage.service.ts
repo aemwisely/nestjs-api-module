@@ -1,7 +1,7 @@
 import dayjs from '@libs/common/base/dayjs/dayjs';
 import { MediaObjectEntity } from '@libs/common/entities';
 import { FileStorageFunctionalRepository } from '@libs/core/application/file-storage/ports';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import * as Minio from 'minio';
@@ -10,6 +10,7 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class FileStorageService implements FileStorageFunctionalRepository {
+  private readonly logger = new Logger(FileStorageService.name);
   private minioClient: Minio.Client;
 
   private endpoint: string;
@@ -91,7 +92,7 @@ export class FileStorageService implements FileStorageFunctionalRepository {
         key,
       };
     } catch (error) {
-      console.log('🚀 - error:', error);
+      this.logger.error('Failed to upload object to MinIO', error);
       throw error;
     }
   }

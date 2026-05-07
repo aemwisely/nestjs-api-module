@@ -22,8 +22,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const logger = app.get(Logger);
-  const prefix = configService.get('APP_PREFIX', 'api');
-  const port = configService.get('APP_PORT', 3000);
+  const prefix = configService.get<string>('APP_PREFIX', 'api');
+  const port = configService.get<number>('APP_PORT', 3000);
   app.useLogger(logger);
 
   app.setGlobalPrefix(prefix, {
@@ -53,11 +53,14 @@ async function bootstrap() {
 
   BuildSwaggerDocument(app, 'DOCUMENTATION', 'LIST ALL API', '1.0.0', prefix);
 
-  await app.listen(port, async () => {
-    const url = await app.getUrl();
-    logger.warn(`:: Application is running on ${url}/${prefix}`);
-    logger.warn(`:: Documentation is running on ${url}/${prefix}/docs`);
-  });
+  await app.listen(port);
+
+  const url = await app.getUrl();
+  logger.warn(`:: Application is running on ${url}/${prefix}`);
+  logger.warn(`:: Documentation is running on ${url}/${prefix}/docs`);
 }
 
-(async () => await bootstrap())();
+bootstrap().catch((error: unknown) => {
+  console.error(error);
+  process.exit(1);
+});

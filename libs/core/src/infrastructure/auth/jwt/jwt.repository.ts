@@ -30,7 +30,7 @@ export class JwtRepository implements TokenFunctionalRepository {
    */
   async generateAccessToken(payload: any): Promise<string> {
     return await this.jwt.signAsync(payload, {
-      secret: this.config.get<string>('JWT_SECRET'),
+      secret: this.config.getOrThrow<string>('JWT_SECRET'),
       expiresIn: this.getAccessTokenExpiration(),
     });
   }
@@ -40,7 +40,7 @@ export class JwtRepository implements TokenFunctionalRepository {
    */
   async generateRefreshToken(payload: any): Promise<string> {
     return await this.jwt.signAsync(payload, {
-      secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
       expiresIn: this.getRefreshTokenExpiration(),
     });
   }
@@ -58,9 +58,9 @@ export class JwtRepository implements TokenFunctionalRepository {
   async verifyAccessToken(token: string): Promise<any> {
     try {
       return await this.jwt.verifyAsync(token, {
-        secret: this.config.get<string>('JWT_SECRET'),
+        secret: this.config.getOrThrow<string>('JWT_SECRET'),
       });
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -71,9 +71,9 @@ export class JwtRepository implements TokenFunctionalRepository {
   async verifyRefreshToken(token: string): Promise<any> {
     try {
       return await this.jwt.verifyAsync(token, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
       });
-    } catch (error) {
+    } catch {
       return null;
     }
   }

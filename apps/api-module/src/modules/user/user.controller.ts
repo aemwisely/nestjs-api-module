@@ -38,16 +38,11 @@ export class UserController {
   @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() body: CreateUserDto) {
-    try {
-      const data = await this.usecaseCreateUser.execute(body);
+    const data = await this.usecaseCreateUser.execute(body);
 
-      return {
-        result: data,
-      };
-    } catch (error) {
-      // Error handling can be improved with proper exception filters
-      throw error;
-    }
+    return {
+      result: data,
+    };
   }
 
   /**
@@ -57,26 +52,19 @@ export class UserController {
    */
   @Get('/')
   async findAll(@Query() query: CommonFilter) {
-    try {
-      const { page, limit, getPageCount } = query;
+    const { page, limit } = query;
 
-      // Note: This assumes the use case supports pagination.
-      // In a real implementation, you might need to modify GetUserUseCase
-      // to accept pagination parameters.
-      const [data, count] = await this.usecaseGetUser.findAllEntityWithPagination(query);
+    const [data, count] = await this.usecaseGetUser.findAllEntityWithPagination(query);
 
-      return {
-        result: data,
-        pagination: {
-          page,
-          limit,
-          count,
-          pageCount: getPageCount(limit, count),
-        },
-      };
-    } catch (error) {
-      throw error;
-    }
+    return {
+      result: data,
+      pagination: {
+        page,
+        limit,
+        count,
+        pageCount: query.getPageCount(limit, count),
+      },
+    };
   }
 
   /**
@@ -86,14 +74,10 @@ export class UserController {
    */
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    try {
-      const data = await this.usecaseGetUser.getOneEntity(id);
+    const data = await this.usecaseGetUser.getOneEntity(id);
 
-      return {
-        result: data,
-      };
-    } catch (error) {
-      throw error;
-    }
+    return {
+      result: data,
+    };
   }
 }

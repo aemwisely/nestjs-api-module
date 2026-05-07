@@ -12,8 +12,8 @@ import { TokenEntity } from '@libs/common/entities';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
       }),
     }),
     TypeOrmModule.forFeature([TokenEntity]),
