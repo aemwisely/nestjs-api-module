@@ -1,31 +1,31 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/api-module/src",
+  "sourceRoot": "apps/backoffice/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": false,
-    "tsConfigPath": "apps/api-module/tsconfig.app.json"
+    "tsConfigPath": "apps/backoffice/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/api-module",
+  "root": "apps/backoffice",
   "projects": {
-    "api-management": {
+    "client": {
       "type": "application",
-      "root": "apps/api-management",
+      "root": "apps/client",
       "entryFile": "main",
-      "sourceRoot": "apps/api-management/src",
+      "sourceRoot": "apps/client/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-management/tsconfig.app.json"
+        "tsConfigPath": "apps/client/tsconfig.app.json"
       }
     },
-    "api-module": {
+    "backoffice": {
       "type": "application",
-      "root": "apps/api-module",
+      "root": "apps/backoffice",
       "entryFile": "main",
-      "sourceRoot": "apps/api-module/src",
+      "sourceRoot": "apps/backoffice/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-module/tsconfig.app.json"
+        "tsConfigPath": "apps/backoffice/tsconfig.app.json"
       }
     },
     "common": {

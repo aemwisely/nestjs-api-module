@@ -99,14 +99,14 @@ psql api_db -c "\dt"
 ### 4. Start Development
 
 ```bash
-npm run start:dev api-module
+npm run start:dev backoffice
 ```
 
 ## File Structure
 
 ```
-api-module/
-├── apps/api-module/src/
+backoffice/
+├── apps/backoffice/src/
 │   └── auth/
 │       ├── auth.controller.ts          (5 endpoints)
 │       └── auth.module.ts

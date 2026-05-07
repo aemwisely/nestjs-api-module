@@ -25,7 +25,7 @@ JWT_REFRESH_EXPIRATION=3d
 ### 3. Start Application
 
 ```bash
-npm run start:dev api-module
+npm run start:dev backoffice
 ```
 
 ## API Usage Examples
