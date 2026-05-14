@@ -16,7 +16,7 @@ export class GetUserUseCase {
 
   async findAllEntityWithPagination(filter: CommonFilter): Promise<[UserEntity[], number]> {
     const { pagination, limit } = filter;
-    const queryBuilder = this.repository.useQueryBuilder();
+    const queryBuilder = this.repository.useQueryBuilder().leftJoinAndSelect('user.role', 'r');
 
     if (pagination) {
       queryBuilder.skip(filter.getOffset(filter)).take(limit);

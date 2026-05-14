@@ -1,7 +1,13 @@
 import { JwtGuard } from '@libs/common/authentication';
 import { JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN } from '@libs/common/config/swagger';
-import { Context, IContext, AccessToken, PermissionModuleCode } from '@libs/common/decorator';
-import { EModule } from '@libs/common/exception';
+import {
+  Context,
+  IContext,
+  AccessToken,
+  RefreshToken,
+  PermissionModuleCode,
+} from '@libs/common/decorator';
+import { EModule, RefreshTokenInvalidException } from '@libs/common/exception';
 import {
   GetSelfUseCase,
   LoginUseCase,
@@ -17,7 +23,6 @@ import {
 } from '@libs/core/infrastructure';
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiOkResponse } from '@nestjs/swagger';
-import { PermissionGuard } from '@libs/core/presentation';
 
 /**
  * Authentication Controller
@@ -67,9 +72,18 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth(JWT_REFRESH_TOKEN)
   @ApiOkResponse({ type: TokenResponseDto })
-  async refreshToken(@Body() dto: RefreshTokenDto) {
+  async refreshToken(
+    @Body() dto: RefreshTokenDto = {},
+    @RefreshToken() headerRefreshToken: string,
+  ) {
+    const refreshToken = dto.refreshToken ?? headerRefreshToken;
+
+    if (!refreshToken) {
+      throw new RefreshTokenInvalidException();
+    }
+
     const data = await this.refreshTokenUseCase.execute(
-      dto.refreshToken,
+      refreshToken,
       dto.renewRefreshToken ?? true,
     );
     return {
@@ -86,7 +100,7 @@ export class AuthController {
    * Revoke current token or all tokens for the user
    */
   @Post('/revoke')
-  @UseGuards(JwtGuard, PermissionGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async revokeToken(
@@ -118,7 +132,7 @@ export class AuthController {
    * Invalidates old token and issues new one
    */
   @Post('/renew')
-  @UseGuards(JwtGuard, PermissionGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: TokenResponseDto })
@@ -138,7 +152,7 @@ export class AuthController {
    * Get current authenticated user information
    */
   @Get('/self')
-  @UseGuards(JwtGuard, PermissionGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth(JWT_ACCESS_TOKEN)
   @HttpCode(HttpStatus.OK)
   async getSelf(@Context() context: IContext) {

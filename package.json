@@ -23,7 +23,8 @@
     "migration:show": "typeorm migration:show",
     "migration:run": "typeorm migration:run",
     "migration:revert": "typeorm migration:revert",
-    "schema:drop": "typeorm schema:drop"
+    "schema:drop": "typeorm schema:drop",
+    "data:init": "node ./migrations/initial/initial.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

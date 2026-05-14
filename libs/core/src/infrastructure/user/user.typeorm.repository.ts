@@ -37,6 +37,7 @@ export class UserTypeOrmRepository implements UserFunctionalRepository {
   async findById(id: string): Promise<UserModel | null> {
     const entity = await this.repository.findOne({
       where: { id },
+      relations: { role: { role_menus: { menu: true } } },
     });
 
     if (!entity) {

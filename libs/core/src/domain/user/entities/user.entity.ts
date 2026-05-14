@@ -1,4 +1,4 @@
-import { UserEntity } from '@libs/common/entities';
+import { RoleEntity, UserEntity } from '@libs/common/entities';
 import { uuidv7 } from 'uuidv7';
 
 export type TUserEntity = {
@@ -11,6 +11,7 @@ export type TUserEntity = {
   session_id?: string;
   refresh_token?: string;
   role_id: string;
+  role?: RoleEntity;
 };
 
 export class UserModel {
@@ -24,6 +25,7 @@ export class UserModel {
     public session_id: string | undefined,
     public refresh_token: string | undefined,
     public role_id: string,
+    public role?: RoleEntity,
   ) {}
 
   getPassword(): string {
@@ -66,17 +68,25 @@ export class UserModel {
       entity.session_id,
       entity.refresh_token,
       entity.role_id,
+      entity.role,
     );
   }
 
   static toEntity(domain: Partial<UserModel>) {
-    return new UserEntity({
+    const entity = new UserEntity({
       id: domain.id,
       first_name: domain.first_name,
       last_name: domain.last_name,
       email: domain.email,
       is_active: domain.is_active,
+      role_id: domain.role_id,
     });
+
+    if (domain.role) {
+      entity.role = domain.role;
+    }
+
+    return entity;
   }
 
   getPayload(session_id: string) {

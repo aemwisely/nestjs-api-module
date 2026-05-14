@@ -60,24 +60,28 @@ export class RoleMenuRepository implements RoleMenuFunctionalRepository {
     module_code: string;
     required_permission: PermissionAction;
   }): Promise<PermissionDecision | null> {
-    const permissionRank = `CASE roleMenu.permission
+    const permissionRank = `
+    CASE role_menu.permission
       WHEN 'ALL' THEN 3
       WHEN :requiredPermission THEN 2
       WHEN 'NONE' THEN 0
       ELSE 1
-    END`;
+    END
+  `;
 
     const row = await this.roleMenuRepository
-      .createQueryBuilder('roleMenu')
-      .innerJoin('roleMenu.menu', 'menu')
-      .innerJoin('roleMenu.role', 'role')
-      .select('roleMenu.permission', 'permission')
+      .createQueryBuilder('role_menu')
+      .innerJoin('role_menu.menu', 'menu')
+      .innerJoin('role_menu.role', 'role')
+      .select('role_menu.permission', 'permission')
       .addSelect('menu.id', 'menu_id')
       .addSelect('menu.code', 'menu_code')
-      .where('roleMenu.role_id = :roleId', { roleId: params.role_id })
+      .where('role_menu.role_id = :roleId', { roleId: params.role_id })
       .andWhere('menu.is_active = true')
       .andWhere('role.is_active = true')
-      .andWhere('menu.code = :moduleCode', { moduleCode: params.module_code })
+      .andWhere('menu.code = :moduleCode', {
+        moduleCode: params.module_code,
+      })
       .orderBy(permissionRank, 'DESC')
       .setParameter('requiredPermission', params.required_permission)
       .limit(1)

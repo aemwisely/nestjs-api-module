@@ -8,11 +8,12 @@ import { IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 export class RefreshTokenDto {
   @ApiProperty({
     name: 'refresh_token',
-    description: 'Refresh token from login response',
-    required: true,
+    description: 'Refresh token from login response. Optional when sent as Bearer token.',
+    required: false,
   })
+  @IsOptional()
   @IsNotEmpty()
-  refreshToken: string;
+  refreshToken?: string;
 
   @ApiProperty({
     name: 'renew_refresh_token',
