@@ -10,6 +10,7 @@ import {
   TokenNotFoundException,
   TokenOperationFailedException,
   TokenOwnerMismatchException,
+  UserUnauthorizedException,
 } from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 
@@ -52,6 +53,10 @@ export class RefreshTokenUseCase {
         throw new TokenNotFoundException();
       }
 
+      if (payload.sub !== storedToken.user_id || payload.session_id !== storedToken.session_id) {
+        throw new TokenOwnerMismatchException({ user_id: storedToken.user_id });
+      }
+
       // Check if token is still valid
       if (!storedToken.isRefreshTokenValid()) {
         throw new TokenExpiredOrRevokedException();
@@ -62,6 +67,10 @@ export class RefreshTokenUseCase {
 
       if (!user) {
         throw new TokenOwnerMismatchException({ user_id: storedToken.user_id });
+      }
+
+      if (!user.is_active) {
+        throw new UserUnauthorizedException({ email: user.email });
       }
 
       const tokenPayload = {

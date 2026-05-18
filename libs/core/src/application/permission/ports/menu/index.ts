@@ -1,1 +1,1 @@
-export * from './menu.repository';
+export * from '../../abstracts/menu';

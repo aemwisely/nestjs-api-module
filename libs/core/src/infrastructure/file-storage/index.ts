@@ -1,2 +1,2 @@
-export * from './file-storage.service';
-export * from './media-object.service';
+export * from './implements/file-storage.service';
+export * from './implements/media-object.service';

@@ -1,1 +1,1 @@
-export * from './xlsx.provider';
+export * from './implements/xlsx.provider';

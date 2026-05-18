@@ -1,1 +1,1 @@
-export * from './role-menu.repository';
+export * from '../../abstracts/role-menu';

@@ -1,1 +1,1 @@
-export * from './password-hasher';
+export * from './implements/password-hasher';

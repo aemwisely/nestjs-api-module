@@ -1,1 +1,1 @@
-export * from './user.typeorm.repository';
+export * from './implements/user.typeorm.repository';

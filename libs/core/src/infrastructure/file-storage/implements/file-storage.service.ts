@@ -1,6 +1,6 @@
 import dayjs from '@libs/common/base/dayjs/dayjs';
 import { MediaObjectEntity } from '@libs/common/entities';
-import { FileStorageFunctionalRepository } from '@libs/core/application/file-storage/ports';
+import { FileStorageFunctionalRepository } from '@libs/core/application/file-storage/abstracts';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';

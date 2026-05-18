@@ -1,4 +1,5 @@
 import { TokenFunctionalRepository } from '@libs/core/application';
+import { IContext } from '@libs/common/decorator';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -57,7 +58,7 @@ export class JwtRepository implements TokenFunctionalRepository {
    */
   async verifyAccessToken(token: string): Promise<any> {
     try {
-      return await this.jwt.verifyAsync(token, {
+      return await this.jwt.verifyAsync<IContext>(token, {
         secret: this.config.getOrThrow<string>('JWT_SECRET'),
       });
     } catch {
@@ -68,9 +69,9 @@ export class JwtRepository implements TokenFunctionalRepository {
   /**
    * Verify refresh token
    */
-  async verifyRefreshToken(token: string): Promise<any> {
+  async verifyRefreshToken(token: string): Promise<IContext | null> {
     try {
-      return await this.jwt.verifyAsync(token, {
+      return await this.jwt.verifyAsync<IContext>(token, {
         secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
       });
     } catch {

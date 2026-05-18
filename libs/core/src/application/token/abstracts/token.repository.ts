@@ -1,6 +1,8 @@
+import { IContext } from '@libs/common/decorator';
+
 export abstract class TokenFunctionalRepository {
   abstract generateAccessToken(payload: any): Promise<string>;
   abstract generateRefreshToken(payload: any): Promise<string>;
   abstract hashToken(token: string): Promise<string>;
-  abstract verifyRefreshToken(refreshToken: string): Promise<string>;
+  abstract verifyRefreshToken(refreshToken: string): Promise<IContext | null>;
 }

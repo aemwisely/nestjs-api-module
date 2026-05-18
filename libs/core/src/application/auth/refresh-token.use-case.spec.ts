@@ -1,4 +1,8 @@
-import { TokenAlreadyUsedException } from '@libs/common/exception';
+import {
+  TokenAlreadyUsedException,
+  TokenOwnerMismatchException,
+  UserUnauthorizedException,
+} from '@libs/common/exception';
 import { TokenModel } from '@libs/core/domain/token';
 import { RefreshTokenUseCase } from './refresh-token.use-case';
 
@@ -33,6 +37,7 @@ describe('RefreshTokenUseCase', () => {
       getOneEntity: jest.fn().mockResolvedValue({
         id: storedToken.user_id,
         email: 'jane@example.com',
+        is_active: true,
       }),
     };
     const updateUserUseCase = {
@@ -48,6 +53,7 @@ describe('RefreshTokenUseCase', () => {
       ),
       tokenStorageRepository,
       tokenFunctionalRepository,
+      getUserUseCase,
       updateUserUseCase,
     };
   }
@@ -99,6 +105,35 @@ describe('RefreshTokenUseCase', () => {
     await expect(useCase.execute('old-refresh-token', true)).rejects.toBeInstanceOf(
       TokenAlreadyUsedException,
     );
+  });
+
+  it('rejects refresh tokens whose payload does not match the stored owner and session', async () => {
+    const { useCase, tokenFunctionalRepository } = createUseCase();
+    tokenFunctionalRepository.verifyRefreshToken.mockResolvedValue({
+      sub: '019b02b0-0000-7000-8000-000000000999',
+      email: 'attacker@example.com',
+      session_id: storedToken.session_id,
+    });
+
+    await expect(useCase.execute('old-refresh-token', true)).rejects.toBeInstanceOf(
+      TokenOwnerMismatchException,
+    );
+  });
+
+  it('does not issue refreshed tokens for inactive users', async () => {
+    const { useCase, getUserUseCase, tokenFunctionalRepository, tokenStorageRepository } =
+      createUseCase();
+    getUserUseCase.getOneEntity.mockResolvedValue({
+      id: storedToken.user_id,
+      email: 'jane@example.com',
+      is_active: false,
+    });
+
+    await expect(useCase.execute('old-refresh-token', true)).rejects.toBeInstanceOf(
+      UserUnauthorizedException,
+    );
+    expect(tokenFunctionalRepository.generateAccessToken).not.toHaveBeenCalled();
+    expect(tokenStorageRepository.rotateToken).not.toHaveBeenCalled();
   });
 
   it('stores the new access token when refresh token rotation is disabled', async () => {

@@ -2,7 +2,7 @@ import dayjs from '@libs/common/base/dayjs/dayjs';
 import { Injectable } from '@nestjs/common';
 import * as exporter from 'excel4node';
 import { Response } from 'express';
-import { DataHeaderStyle, HeaderMainStyle } from './style';
+import { DataHeaderStyle, HeaderMainStyle } from '../style';
 
 @Injectable()
 export class XLSXProvider {

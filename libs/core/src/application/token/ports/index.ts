@@ -1,2 +1,1 @@
-export * from './token.repository';
-export * from './token-storage.repository';
+export * from '../abstracts';
